@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "944267780019",
+    "project_id": "psychologyapp-login-33bd3",
+    "storage_bucket": "psychologyapp-login-33bd3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:944267780019:android:8c70d305ac2d2fb286b5c6",
+        "android_client_info": {
+          "package_name": "com.example.psychologyapp_login"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpRNyesakDLooEXC6TzzTkinjeefOvctQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Reset password</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      body { font-family: Arial; padding: 20px; max-width: 520px; margin: auto; }
+      .hidden { display:none; }
+      .error { color: red; }
+      .success { color: green; }
+    </style>
+  </head>
+  <body>
+    <h2>Set a new password</h2>
+    <div id="info">Loading...</div>
+
+    <div id="form" class="hidden">
+      <p id="emailDisplay"></p>
+      <label>New password (min 6 chars)</label><br/>
+      <input id="newPassword" type="password" /><br/><br/>
+      <button id="submitBtn">Set new password</button>
+      <p id="message" class=""></p>
+    </div>
+
+    <div id="done" class="hidden">
+      <p class="success">Your password has been updated. You can now open the app and sign in with the new password.</p>
+      <p><a id="openApp" href="#">Open App</a> (or go to login)</p>
+    </div>
+
+    <!-- Firebase SDKs (modular) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+      import {
+        getAuth,
+        verifyPasswordResetCode,
+        confirmPasswordReset,
+      } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+      // TODO: replace with your project's config
+      const firebaseConfig = {
+        apiKey: "AIzaSyBHuhEmeJI9nAk9F3p-LTIzk0A7Ttkhyiw",
+  authDomain: "psychologyapp-login-33bd3.firebaseapp.com",
+  projectId: "psychologyapp-login-33bd3",
+  storageBucket: "psychologyapp-login-33bd3.firebasestorage.app",
+  messagingSenderId: "944267780019",
+  appId: "1:944267780019:web:1853cecc0d7578fa86b5c6"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+
+      // helpers
+      const qs = new URLSearchParams(window.location.search);
+      const oobCode = qs.get('oobCode');
+      const mode = qs.get('mode'); // optional
+      const apiKey = qs.get('apiKey'); // optional
+
+      const infoEl = document.getElementById('info');
+      const formEl = document.getElementById('form');
+      const emailDisplay = document.getElementById('emailDisplay');
+      const newPasswordInput = document.getElementById('newPassword');
+      const submitBtn = document.getElementById('submitBtn');
+      const messageEl = document.getElementById('message');
+      const doneEl = document.getElementById('done');
+      const openAppLink = document.getElementById('openApp');
+
+      if (!oobCode) {
+        infoEl.textContent = 'Invalid link (no code found).';
+      } else {
+        // Optionally check the mode is resetPassword
+        // if (mode !== 'resetPassword') { infoEl.textContent = 'Invalid action.'; }
+
+        // Verify the code and get email (optional, nice UX)
+        verifyPasswordResetCode(auth, oobCode)
+          .then(email => {
+            infoEl.classList.add('hidden');
+            formEl.classList.remove('hidden');
+            emailDisplay.textContent = `Account: ${email}`;
+          })
+          .catch(err => {
+            console.error('verifyPasswordResetCode error', err);
+            infoEl.textContent = 'This password reset link is invalid or has expired.';
+            messageEl.textContent = err.message || err.code;
+            messageEl.className = 'error';
+          });
+      }
+
+      submitBtn.addEventListener('click', async () => {
+        messageEl.textContent = '';
+        const newPassword = newPasswordInput.value.trim();
+        if (!newPassword || newPassword.length < 6) {
+          messageEl.textContent = 'Password must be at least 6 characters.';
+          messageEl.className = 'error';
+          return;
+        }
+        submitBtn.disabled = true;
+        try {
+          await confirmPasswordReset(auth, oobCode, newPassword);
+          // success
+          formEl.classList.add('hidden');
+          doneEl.classList.remove('hidden');
+          messageEl.textContent = '';
+          // optional: set openAppLink to a deep link or app store page
+          openAppLink.href = "myapp://login"; // if your app registers a custom scheme
+        } catch (e) {
+          console.error('confirmPasswordReset error', e);
+          messageEl.textContent = e.message || e.code;
+          messageEl.className = 'error';
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
