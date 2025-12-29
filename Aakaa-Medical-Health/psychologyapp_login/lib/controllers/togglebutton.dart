@@ -50,7 +50,7 @@ class SlidingToggleButton extends StatelessWidget {
               ),
             ),
           ),
-
+    
           // The actual toggle texts
           Row(
             children: [

@@ -5,7 +5,8 @@ import 'package:psychologyapp_login/views/clientplan.dart';
 import 'package:psychologyapp_login/views/clientprofile.dart';
 
 class ClientNavigationBar extends StatefulWidget {
-  const ClientNavigationBar({super.key});
+  final String loginemail;
+  const ClientNavigationBar({super.key, required this.loginemail});
 
   @override
   State<ClientNavigationBar> createState() => _ClientNavigationBarState();
@@ -13,12 +14,19 @@ class ClientNavigationBar extends StatefulWidget {
 
 class _ClientNavigationBarState extends State<ClientNavigationBar>{
   int selectedindex = 0;
-  final List<Widget> _screens =[
-    ClientMenu(),
+  late final List<Widget> _screens;
+
+  @override
+  void initState(){
+    super.initState();
+    _screens =
+   [
+    ClientMenu(email: widget.loginemail),
     ClientActivity(),
     ClientPlan(),
     ClientProfile()
   ];
+  }
 
   void onItemTapped(int index){
     setState(() {
