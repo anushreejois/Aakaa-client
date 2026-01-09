@@ -24,7 +24,7 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
     ClientMenu(email: widget.loginemail),
     ClientActivity(),
     ClientPlan(),
-    ClientProfile()
+    ClientProfile(email: widget.loginemail),
   ];
   }
 

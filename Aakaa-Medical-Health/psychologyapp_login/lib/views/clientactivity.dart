@@ -11,43 +11,43 @@ class _ClientActivityState extends State<ClientActivity>{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
-      appBar: AppBar(
-        backgroundColor:  Color(0xFFFFFFFF),
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          surfaceTintColor: Colors.transparent,
-          forceMaterialTransparency: false,
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Scaffold(
+        backgroundColor: Color(0xFFFFFFFF),
+        appBar: AppBar(
+          backgroundColor:  Color(0xFFFFFFFF),
+            automaticallyImplyLeading: false,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            surfaceTintColor: Colors.transparent,
+            forceMaterialTransparency: false,
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+              "Activity",
+              style: TextStyle(
+                color: Color(0xFF000000),
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 2),
             Text(
-            "Activity",
-            style: TextStyle(
-              color: Color(0xFF000000),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+              "Activity Summary",
+              style: TextStyle(
+                color: Color(0xFF000000),
+                fontSize: 18,
+                fontWeight: FontWeight.normal,
+              ),
             ),
+            ],
           ),
-          SizedBox(height: 2),
-          Text(
-            "Activity Summary",
-            style: TextStyle(
-              color: Color(0xFF000000),
-              fontSize: 18,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-          ],
         ),
-      ),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Center(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
