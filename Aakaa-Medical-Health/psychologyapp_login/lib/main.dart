@@ -17,7 +17,7 @@ void main() async{
           ),
       )
       : await Firebase.initializeApp();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(const MyApp());
 }
 

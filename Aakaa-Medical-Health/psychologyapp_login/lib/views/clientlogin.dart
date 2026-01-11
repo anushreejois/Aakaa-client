@@ -37,6 +37,8 @@ class _ClientLoginState extends State<ClientLogin> {
       backgroundColor: Color(0xFFB3261E),
       appBar: AppBar(
         backgroundColor: Color(0xFFB3261E),
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color(0xFFFFFFFF), size: 30),
           onPressed: () {
