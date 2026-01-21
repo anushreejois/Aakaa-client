@@ -89,7 +89,7 @@ class _ClientPlanState extends State<ClientPlan>{
                                               borderRadius: BorderRadius.circular(20),
                                             ),
                                             child: Card(
-                                              elevation: 20,
+                                              elevation: 0,
                                               color: Color(0xFFFCF8F7),
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(20),
@@ -228,7 +228,7 @@ class _ClientPlanState extends State<ClientPlan>{
                 ]
               ),
             ),
-          )
+          ),
         ),
       ),
     );

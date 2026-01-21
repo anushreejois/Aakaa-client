@@ -23,12 +23,18 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
    [
     ClientMenu(email: widget.loginemail),
     ClientActivity(),
-    ClientPlan(),
-    ClientProfile(email: widget.loginemail),
+    ClientPlan( ),
+    ClientProfile(email: widget.loginemail, onNavigateToTab: navigateToTab),
   ];
   }
 
   void onItemTapped(int index){
+    setState(() {
+      selectedindex = index;
+    });
+  }
+
+  void navigateToTab(index){
     setState(() {
       selectedindex = index;
     });

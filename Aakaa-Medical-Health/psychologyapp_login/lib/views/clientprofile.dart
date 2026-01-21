@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:psychologyapp_login/views/clientfullprofilepic.dart';
+import 'package:psychologyapp_login/views/clienteditprofile.dart';
 import 'package:psychologyapp_login/views/clientlogin.dart';
+import 'package:psychologyapp_login/views/clientmysession.dart';
+import 'package:psychologyapp_login/views/clientnotification.dart';
+import 'package:psychologyapp_login/views/languages.dart';
 
 class ClientProfile extends StatefulWidget {
   final String email;
-  const ClientProfile({super.key, required this.email});
+  final Function(int) onNavigateToTab;
+  const ClientProfile({super.key, required this.email, required this.onNavigateToTab});
 
   @override
   State<ClientProfile> createState() => _ClientProfileState();
@@ -23,8 +27,8 @@ class _ClientProfileState extends State<ClientProfile>{
 
 
   Future<void> openProfileImage() async {
-    final File? updatedImage = await Navigator.push<File?>(
-      context, MaterialPageRoute(builder: (_) => FullProfileImageScreen(imageFile: _profileImage))
+    final File? updatedImage = await Navigator.push(
+      context, MaterialPageRoute(builder: (_) => EditProfile(imageFile: _profileImage,))
     );
     if(updatedImage != null){
       setState(() {
@@ -32,7 +36,7 @@ class _ClientProfileState extends State<ClientProfile>{
       });
     }
   }
-
+  
   Future<void> logout() async {
     await _auth.signOut();
   }  
@@ -63,8 +67,8 @@ class _ClientProfileState extends State<ClientProfile>{
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
               child: Column(
-                children:[ GestureDetector(
-                  onTap: openProfileImage,
+                children:[ 
+                  GestureDetector(
                   child: Stack(
                     children:[ 
                       CircleAvatar(
@@ -105,7 +109,7 @@ class _ClientProfileState extends State<ClientProfile>{
                         ),
                         child: ElevatedButton(
                           onPressed:(){
-                            //
+                            openProfileImage();
                           },
                           child: FittedBox(
                             child: Text("Edit Profile",
@@ -133,7 +137,7 @@ class _ClientProfileState extends State<ClientProfile>{
                         ),
                         child: ElevatedButton(
                           onPressed:(){
-                            //
+                            widget.onNavigateToTab(2);
                           },
                           child: FittedBox(
                             child: Text("My Plan",
@@ -267,7 +271,10 @@ class _ClientProfileState extends State<ClientProfile>{
                           SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                           IconButton(
                             onPressed: (){
-        
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => ClientMySession()));
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,
@@ -322,7 +329,10 @@ class _ClientProfileState extends State<ClientProfile>{
                           ),
                           IconButton(
                             onPressed: (){
-                              //
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => ClientNotification()));
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,
@@ -361,7 +371,10 @@ class _ClientProfileState extends State<ClientProfile>{
                               SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                               IconButton(
                                 onPressed: (){
-                                  //
+                                  Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => Languages()));
                                 },
                                 icon: Icon(
                                   Icons.arrow_forward_ios,
