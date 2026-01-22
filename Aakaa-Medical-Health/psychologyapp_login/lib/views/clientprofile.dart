@@ -5,6 +5,7 @@ import 'package:psychologyapp_login/views/clienteditprofile.dart';
 import 'package:psychologyapp_login/views/clientlogin.dart';
 import 'package:psychologyapp_login/views/clientmysession.dart';
 import 'package:psychologyapp_login/views/clientnotification.dart';
+import 'package:psychologyapp_login/views/helpandsupport.dart';
 import 'package:psychologyapp_login/views/languages.dart';
 
 class ClientProfile extends StatefulWidget {
@@ -406,7 +407,10 @@ class _ClientProfileState extends State<ClientProfile>{
                           ),
                           IconButton(
                             onPressed: (){
-                              //
+                              Navigator.push(
+                                context, 
+                                MaterialPageRoute(
+                                  builder: (context) => HelpAndSupport()));
                             },
                             icon: Icon(
                               Icons.arrow_forward_ios,
