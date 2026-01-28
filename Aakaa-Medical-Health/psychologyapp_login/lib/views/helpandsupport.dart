@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:psychologyapp_login/views/faq.dart';
 
 class HelpAndSupport extends StatefulWidget {
   const HelpAndSupport({super.key});
@@ -46,7 +47,7 @@ class _HelpAndSupportState extends State<HelpAndSupport> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      // TODO
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => FaQ()));
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Color(0xFFFFF7F7),
