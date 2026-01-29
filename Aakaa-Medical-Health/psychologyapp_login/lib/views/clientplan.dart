@@ -106,7 +106,7 @@ class _ClientPlanState extends State<ClientPlan>{
                                                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Text("Freemium🧪",
+                                                          Text("Freemium 🧪",
                                                           style: TextStyle(
                                                             fontSize: 32,
                                                             color: Color(0xFF000000),
