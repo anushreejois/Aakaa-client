@@ -320,7 +320,10 @@ class _FaQState
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: ElevatedButton(
                           onPressed: () {
-                            //TODO
+                            int count = 0;
+                            Navigator.popUntil(context, (route){
+                              return count++ == 2;
+                            });
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFB3261E),

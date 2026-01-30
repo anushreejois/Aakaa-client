@@ -21,6 +21,8 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
             color: Color(0xFF000000),
           ),
         ),
+        elevation: 0,
+        scrolledUnderElevation: 0,
       ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
