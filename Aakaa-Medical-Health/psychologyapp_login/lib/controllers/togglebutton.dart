@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SlidingToggleButton extends StatelessWidget {
   final bool isLogin;
@@ -12,24 +13,15 @@ class SlidingToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width * 0.75;
+    double width = MediaQuery.of(context).size.width * 0.7;
 
     return Container(
       width: width,
-      height: 75,
-      padding: const EdgeInsets.all(6),
+      height: 50,
+      padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F4F7),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            // ignore: deprecated_member_use
-            color: const Color(0xFF3E64FF).withOpacity(0.4),
-            blurRadius: 11,
-            spreadRadius: 3,
-            offset: const Offset(0, 9),
-          ),
-        ],
+        color: const Color(0xFF065643).withOpacity(0.08),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Stack(
         children: [
@@ -39,14 +31,20 @@ class SlidingToggleButton extends StatelessWidget {
                 ? Alignment.centerLeft
                 : Alignment.centerRight,
             duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+            curve: Curves.easeOutExpo,
             child: Container(
-              width: (width - 12) / 2,
-              height: 58,
+              width: (width - 8) / 2,
+              height: 42,
               decoration: BoxDecoration(
-                // ignore: deprecated_member_use
-                color: Color(0xFF6B779A).withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
             ),
           ),
@@ -57,15 +55,14 @@ class SlidingToggleButton extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(true),
+                  behavior: HitTestBehavior.opaque,
                   child: Center(
                     child: Text(
-                      "Log-in",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
-                        color: isLogin
-                            ? Colors.black
-                            : Colors.grey[600],
+                      "Login",
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        fontWeight: isLogin ? FontWeight.bold : FontWeight.w500,
+                        color: isLogin ? const Color(0xFF065643) : Colors.white,
                       ),
                     ),
                   ),
@@ -74,15 +71,14 @@ class SlidingToggleButton extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () => onToggle(false),
+                  behavior: HitTestBehavior.opaque,
                   child: Center(
                     child: Text(
-                      "Sign-up",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
-                        color: !isLogin
-                            ? Colors.black
-                            : Colors.grey[600],
+                      "Sign Up",
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        fontWeight: !isLogin ? FontWeight.bold : FontWeight.w500,
+                        color: !isLogin ? const Color(0xFF065643) : Colors.white,
                       ),
                     ),
                   ),

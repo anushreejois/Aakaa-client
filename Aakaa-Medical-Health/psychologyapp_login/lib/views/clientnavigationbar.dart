@@ -1,4 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/clientactivity.dart';
 import 'package:psychologyapp_login/views/clientmenu.dart';
 import 'package:psychologyapp_login/views/clientplan.dart';
@@ -19,13 +21,12 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
   @override
   void initState(){
     super.initState();
-    _screens =
-   [
-    ClientMenu(email: widget.loginemail),
-    ClientActivity(),
-    ClientPlan( ),
-    ClientProfile(email: widget.loginemail, onNavigateToTab: navigateToTab),
-  ];
+    _screens = [
+      ClientMenu(email: widget.loginemail),
+      ClientActivity(),
+      ClientPlan(),
+      ClientProfile(email: widget.loginemail, onNavigateToTab: navigateToTab),
+    ];
   }
 
   void onItemTapped(int index){
@@ -34,7 +35,7 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
     });
   }
 
-  void navigateToTab(index){
+  void navigateToTab(int index){
     setState(() {
       selectedindex = index;
     });
@@ -43,41 +44,72 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true, // Crucial for glassmorphic/floating effect
       body: IndexedStack(
         index: selectedindex,
         children: _screens,
       ),
-
-      bottomNavigationBar: Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: NoSplash.splashFactory
+      bottomNavigationBar: Container(
+        height: 85,
+        margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF065643).withOpacity(0.12),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          currentIndex: selectedindex,
-          onTap: onItemTapped,
-          backgroundColor: Color(0xFFB3261E),
-          selectedItemColor: Color(0xFFFFFFFF),
-          unselectedItemColor: Color(0xFFD9D9D9),
-          showSelectedLabels: true,
-          showUnselectedLabels: false,
-          selectedIconTheme: IconThemeData(size: 35, opacity: 1.0),
-          unselectedIconTheme: IconThemeData(size: 30, opacity: 0.7),
-          selectedFontSize: 14,
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.bold,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              color: const Color(0xFF065643).withOpacity(0.9),
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: BottomNavigationBar(
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  type: BottomNavigationBarType.fixed,
+                  currentIndex: selectedindex,
+                  onTap: onItemTapped,
+                  selectedItemColor: const Color(0xFFFFF7F5),
+                  unselectedItemColor: const Color(0xFFFFF7F5).withOpacity(0.4),
+                  showSelectedLabels: true,
+                  showUnselectedLabels: false,
+                  selectedFontSize: 12,
+                  selectedLabelStyle: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.grid_view_rounded),
+                      label: "Explore",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.analytics_outlined),
+                      activeIcon: Icon(Icons.analytics_rounded),
+                      label: "Activity",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.assignment_outlined),
+                      activeIcon: Icon(Icons.assignment_rounded),
+                      label: "Plan",
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person_outline_rounded),
+                      activeIcon: Icon(Icons.person_rounded),
+                      label: "Profile",
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          
-          items:[
-            BottomNavigationBarItem(icon: Icon(Icons.home_outlined
-            ), label: "Home"),
-            BottomNavigationBarItem(icon: Icon(Icons.add_chart
-            ), label: "Activity"),
-            BottomNavigationBarItem(icon: Icon(Icons.add_card
-            ), label: "My Plan"),
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline
-            ), label: "Profile")
-          ]
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ClientSubscription extends StatefulWidget {
   const ClientSubscription({super.key});
@@ -8,524 +9,222 @@ class ClientSubscription extends StatefulWidget {
 }
 
 class _ClientSubscriptionState extends State<ClientSubscription> {
-  bool isExpanded = false;
+  int _selectedPlanIndex = 2; // Default to Premium
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Subscription Plans',
-          style: TextStyle(
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF000000),
+      body: Stack(
+        children: [
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+              ),
+            ),
           ),
-        ),
-        elevation: 0,
-        scrolledUnderElevation: 0,
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Color(0xFF3E64FF).withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
-                    color: Color(0xFFFCF8F7),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    color: Color(0xFFFCF8F7),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: Colors.transparent,
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          enableFeedback: false,
-                          childrenPadding: EdgeInsets.only(left: 15),
-                          title: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Freemium 🧪",
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                              Text(
-                                "Onboard users with limited access.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                            ],
-                          ),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Feature:",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Text("Basic profile setup",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Limited mood tracking (3 days)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Explore therapists (no booking)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("1 self-help article/week",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("No appointment access",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("No therapist chat",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+          
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 120.0,
+                floating: false,
+                pinned: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  centerTitle: false,
+                  title: Text(
+                    "Subscription",
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
                     ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Color(0xFF3E64FF).withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // changes position of shadow
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      Text(
+                        "Choose the plan that's right for you",
+                        style: GoogleFonts.outfit(
+                          fontSize: 16,
+                          color: Colors.white.withOpacity(0.5),
+                        ),
                       ),
+                      const SizedBox(height: 32),
+                      
+                      _buildPlanCard(0, "Freemium", "🧪", "The essentials", "Free", [
+                        "Basic profile setup",
+                        "3-day mood tracking",
+                        "Explore therapists",
+                      ]),
+                      const SizedBox(height: 16),
+                      _buildPlanCard(1, "Basic", "🎯", "For starters", "₹499/mo", [
+                        "Mood tracking + journal",
+                        "5+ self-help tools",
+                        "Limited therapist chat",
+                        "Appointment access",
+                      ]),
+                      const SizedBox(height: 16),
+                      _buildPlanCard(2, "Premium", "💎", "Best value", "₹999/mo", [
+                        "Unlimited therapist chat",
+                        "Full self-help library",
+                        "AI mood insights",
+                        "Session notes download",
+                        "Priority booking",
+                      ]),
+                      const SizedBox(height: 16),
+                      _buildPlanCard(3, "Platinum", "👑", "VIP care", "₹1999/mo", [
+                        "Emergency support line",
+                        "Dedicated therapist match",
+                        "AI coach & habits",
+                        "Weekly PDF reports",
+                        "Personalized wellness plan",
+                      ]),
+                      
+                      const SizedBox(height: 48),
+                      _buildContinueButton(),
+                      const SizedBox(height: 60),
                     ],
-                    color: Color(0xFFFCF8F7),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    color: Color(0xFFFCF8F7),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: Colors.transparent,
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          enableFeedback: false,
-                          childrenPadding: EdgeInsets.only(left: 15),
-                          title: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Basic Plan 🎯",
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                              Text(
-                                "Affordable starter with limited access.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                            ],
-                          ),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Feature:",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Text("Mood tracking + journal",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("5+ self-help tools/articles",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Therapist chat (limited hours/week)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Appointment access",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("No AI insights or PDF exports",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Color(0xFF3E64FF).withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
-                    color: Color(0xFFFCF8F7),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    color: Color(0xFFFCF8F7),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: Colors.transparent,
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          enableFeedback: false,
-                          childrenPadding: EdgeInsets.only(left: 15),
-                          title: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Premium 💎",
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                              Text(
-                                "Full access for active therapy users.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                            ],
-                          ),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Feature:",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Text("Therapist chat (unlimited)",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Full self-help library",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("AI-powered mood insights",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Download session notes",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Mood tracking + journal",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Appointment access",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Color(0xFF3E64FF).withOpacity(0.5),
-                        spreadRadius: 0,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // changes position of shadow
-                      ),
-                    ],
-                    color: Color(0xFFFCF8F7),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Card(
-                    elevation: 0,
-                    color: Color(0xFFFCF8F7),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          splashColor: Colors.transparent,
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          enableFeedback: false,
-                          childrenPadding: EdgeInsets.only(left: 15),
-                          title: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Platinum 👑",
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                              Text(
-                                "VIP-level care (mental wellness coaching + speed)",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                              ),
-                            ],
-                          ),
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Text("Feature:",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 15.0),
-                                  child: Text("Emergency support line",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Dedicated therapist match",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("AI coach insights & habit tracking",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Weekly PDF progress reports",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Mood tracking + journal",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 15.0),
-                                    child: Text("Appointment access",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    ),
-                                  ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 50),
-              SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.07,
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            //TODO
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFB3261E),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            elevation: 6,
-                          ),
-                          child: Text(
-                            "Continue",
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFFFFFFF),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 40),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlanCard(int index, String title, String emoji, String subtitle, String price, List<String> features) {
+    bool isSelected = _selectedPlanIndex == index;
+    
+    return GestureDetector(
+      onTap: () => setState(() => _selectedPlanIndex = index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.white : Colors.white.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.1),
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isSelected ? 0.15 : 0.05),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(emoji, style: const TextStyle(fontSize: 24)),
+                    const SizedBox(width: 12),
+                    Text(
+                      title,
+                      style: GoogleFonts.outfit(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected ? const Color(0xFF065643) : Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  price,
+                  style: GoogleFonts.outfit(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isSelected ? const Color(0xFF065643) : Colors.white,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: GoogleFonts.outfit(
+                fontSize: 14,
+                color: isSelected ? const Color(0xFF065643).withOpacity(0.7) : Colors.white.withOpacity(0.4),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...features.map((f) => Padding(
+              padding: const EdgeInsets.only(bottom: 10.0),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    size: 16,
+                    color: isSelected ? const Color(0xFF065643).withOpacity(0.6) : Colors.white.withOpacity(0.3),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    f,
+                    style: GoogleFonts.outfit(
+                      fontSize: 14,
+                      color: isSelected ? const Color(0xFF065643).withOpacity(0.8) : Colors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContinueButton() {
+    return GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        width: double.infinity,
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          "Confirm Selection",
+          style: GoogleFonts.outfit(
+            color: const Color(0xFF065643),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

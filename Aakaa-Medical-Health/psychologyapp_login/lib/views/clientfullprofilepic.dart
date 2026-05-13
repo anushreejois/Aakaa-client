@@ -35,7 +35,7 @@ class FullProfileImageScreen extends StatefulWidget{
             backgroundColor: Color(0xFF000000),
             appBar: AppBar(
               backgroundColor: Color(0xFF000000),
-              foregroundColor: Color(0xFFFFFFFF),
+              foregroundColor: Color(0xFFFFF7F5),
               title: Text("Profile Photo"),
               leading: IconButton(
                 onPressed: (){

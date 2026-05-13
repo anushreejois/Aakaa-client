@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/controllers/otpgeneration.dart';
 import "package:psychologyapp_login/views/clientlogin.dart";
 import "package:psychologyapp_login/controllers/signup_loginfunctionality.dart";
@@ -28,354 +29,226 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFB3261E),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFB3261E),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFFFFFFFF), size: 30),
-          onPressed: () {
-            Navigator.pop(context);
+      body: Stack(
+        children: [
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+              ),
+            ),
+          ),
+
+          SafeArea(
+            child: Column(
+              children: [
+                // Custom App Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 24),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                ),
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 40),
+                          // Icon
+                          Container(
+                            padding: const EdgeInsets.all(24),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                            ),
+                            child: const Icon(Icons.mark_email_read_outlined, color: Colors.white, size: 60),
+                          ),
+                          const SizedBox(height: 40),
+                          Text(
+                            "Verification",
+                            style: GoogleFonts.outfit(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Enter the code sent to",
+                            style: GoogleFonts.outfit(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            widget.email,
+                            style: GoogleFonts.outfit(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 60),
+                          
+                          // OTP Inputs
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              _buildOTPField(_firstDigit),
+                              _buildOTPField(_secondDigit),
+                              _buildOTPField(_thirdDigit),
+                              _buildOTPField(_fourthDigit),
+                            ],
+                          ),
+
+                          const SizedBox(height: 60),
+
+                          Text(
+                            "Didn't receive the code?",
+                            style: GoogleFonts.outfit(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextButton(
+                            onPressed: () async {
+                              final success = await OTPGeneration.sendOTP(widget.email);
+                              if (success) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Code resent to ${widget.email}'),
+                                    backgroundColor: const Color(0xFF0A7D62),
+                                  ),
+                                );
+                              }
+                            },
+                            child: Text(
+                              "Resend Code",
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 80),
+
+                          // Verify Button
+                          SizedBox(
+                            width: double.infinity,
+                            height: 65,
+                            child: ElevatedButton(
+                              onPressed: _handleVerify,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: const Color(0xFF065643),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(32),
+                                ),
+                                elevation: 0,
+                              ),
+                              child: Text(
+                                "Verify",
+                                style: GoogleFonts.outfit(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOTPField(TextEditingController controller) {
+    return Container(
+      width: 70,
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
+      ),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          cursorColor: Colors.white,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(1),
+          ],
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "-",
+            hintStyle: TextStyle(color: const Color(0xFF065643).withOpacity(0.3), fontSize: 24),
+          ),
+          style: GoogleFonts.outfit(
+            color: const Color(0xFF065643),
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+          textAlign: TextAlign.center,
+          onChanged: (value) {
+            if (value.isNotEmpty) {
+              FocusScope.of(context).nextFocus();
+            }
           },
         ),
       ),
-
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              child: const Center(
-                child: Text(
-                  "Verification Code",
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 38,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(height: 40),
-            Expanded(
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                height: MediaQuery.of(context).size.height * 0.75,
-                width: MediaQuery.of(context).size.width * 1.0,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: Color(0xFF3E64FF).withOpacity(0.5),
-                      spreadRadius: 15,
-                      blurRadius: 22.3,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
-                  ),
-                ),
-                child: Card(
-                  elevation: 20,
-                  color: Color(0xFFFFFFFF),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: SizedBox(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 30,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              "Please enter the code sent to your email",
-                              style: TextStyle(
-                                color: Color(0xFF000000),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 50,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              widget.email,
-                              style: TextStyle(
-                                color: Color(0xFFF13C32),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 120,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 75,
-                                    height: 55,
-                                    child: TextField(
-                                      controller: _firstDigit,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(1),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Color(0xFFFFE9E8),
-                                        hintText: "-",
-                                        hintStyle: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  SizedBox(
-                                    width: 75,
-                                    height: 55,
-                                    child: TextField(
-                                      controller: _secondDigit,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(1),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Color(0xFFFFE9E8),
-                                        hintText: "-",
-                                        hintStyle: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  SizedBox(
-                                    width: 75,
-                                    height: 55,
-                                    child: TextField(
-                                      controller: _thirdDigit,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(1),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Color(0xFFFFE9E8),
-                                        hintText: "-",
-                                        hintStyle: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  SizedBox(
-                                    width: 75,
-                                    height: 55,
-                                    child: TextField(
-                                      controller: _fourthDigit,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        LengthLimitingTextInputFormatter(1),
-                                      ],
-                                      decoration: InputDecoration(
-                                        border: InputBorder.none,
-                                        filled: true,
-                                        fillColor: Color(0xFFFFE9E8),
-                                        hintText: "-",
-                                        hintStyle: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 210,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              "Didn't receive OTP?",
-                              style: TextStyle(
-                                color: Color(0xFF000000),
-                                fontSize: 21,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 230,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: TextButton(
-                              onPressed: () async {
-                                final success = await OTPGeneration.sendOTP(
-                                  widget.email,
-                                );
-                                if (success) {
-                                  await Navigator.pushReplacement(
-                                  // ignore: use_build_context_synchronously
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ClientEmailVerification(
-                                            email: widget.email,
-                                            password: widget.password,
-                                          ),
-                                    ),
-                                  );
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'OTP sent to ${widget.email}',
-                                        ),
-                                      ),
-                                    );
-                                }
-                              },
-                              child: Text(
-                                "Resend Code",
-                                style: TextStyle(
-                                  color: Color(0xFFF46D65),
-                                  fontSize: 21,
-                                  fontWeight: FontWeight.normal,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 300,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: SizedBox(
-                              width: 280,
-                              height: 65,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  String userEnteredOTP =
-                                      _firstDigit.text +
-                                      _secondDigit.text +
-                                      _thirdDigit.text +
-                                      _fourthDigit.text;
-                                  bool verified = OTPGeneration.verifyOTP(
-                                    userEnteredOTP,
-                                  );
-                                  if (verified) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Sign-Up completed. OTP Verified Successfully!',
-                                        ),
-                                      ),
-                                    );
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ClientLogin(),
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Invalid OTP. Please try again.',
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFFB3261E),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  elevation: 6,
-                                ),
-                                child: const Text(
-                                  "Verify",
-                                  style: TextStyle(
-                                    color: Color(0xFFFFFFFF),
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
+  }
+
+  void _handleVerify() {
+    String userEnteredOTP = _firstDigit.text + _secondDigit.text + _thirdDigit.text + _fourthDigit.text;
+    bool verified = OTPGeneration.verifyOTP(userEnteredOTP);
+    
+    if (verified) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Account verified successfully!'),
+          backgroundColor: Color(0xFF0A7D62),
+        ),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const ClientLogin()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Invalid code. Please try again.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 }

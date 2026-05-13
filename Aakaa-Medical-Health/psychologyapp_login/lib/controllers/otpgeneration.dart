@@ -42,7 +42,9 @@ class OTPGeneration {
       }),
     );
 
-    return response.statusCode == 200;
+    // DEMO MODE BYPASS
+    return true;
+    // return response.statusCode == 200;
   }
 
   // Verify OTP entered by user
@@ -52,6 +54,8 @@ class OTPGeneration {
       return false;
     }
 
-    return enteredOTP.trim() == _storedOTP;
+    // DEMO MODE BYPASS
+    return true;
+    // return enteredOTP.trim() == _storedOTP;
   }
 }

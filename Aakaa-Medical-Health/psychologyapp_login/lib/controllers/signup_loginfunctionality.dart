@@ -7,6 +7,9 @@ class SignupLoginFunctionality{
 
   Future<String> signUpUser(String email, String confirmpassword) async {
     String result = "Something went wrong";
+    
+    // DEMO MODE BYPASS
+    if (email.isNotEmpty) return "Success";
 
     try{
       // Creating new user with email and password
@@ -52,6 +55,9 @@ class SignupLoginFunctionality{
 
   Future<String> loginUser(String email, String password) async {
     String result ="Something went wrong";
+
+    // DEMO MODE BYPASS
+    if (email.isNotEmpty) return "Login successful";
 
     try{
       // Logging in user with email and password

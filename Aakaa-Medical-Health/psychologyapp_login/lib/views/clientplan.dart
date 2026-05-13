@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/clientsubscription.dart';
 
 class ClientPlan extends StatefulWidget {
@@ -9,225 +10,240 @@ class ClientPlan extends StatefulWidget {
 }
 
 class _ClientPlanState extends State<ClientPlan>{
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFB3261E),
-        automaticallyImplyLeading: false,
-      ),
-      backgroundColor: Color(0xFFB3261E),
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Column(
-                children: [
-                  Text("My Plan",
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFFFFFFFF),
-                  )
-                  ),
-                  SizedBox(height: 40),
-                  Container(
-                alignment: Alignment.bottomCenter,
-                height: MediaQuery.of(context).size.height * 0.75,
-                width: MediaQuery.of(context).size.width * 1.0,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: Color(0xFF3E64FF).withOpacity(0.5),
-                      spreadRadius: 15,
-                      blurRadius: 22.3,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
-                  ),
-                ),
-                child: Card(
-                  elevation: 20,
-                  color: Color(0xFFFFFFFF),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: SizedBox(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 30,
-                          left: 0,
-                          right: 0,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.16,
-                              decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                  // ignore: deprecated_member_use
-                                                  color: Color(0xFF3E64FF).withOpacity(0.5),
-                                                  spreadRadius: 0,
-                                                  blurRadius: 4,
-                                                  offset: Offset(0, 4), // changes position of shadow
-                                                ),
-                                              ],
-                                              color: Color(0xFFFCF8F7),
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                            child: Card(
-                                              elevation: 0,
-                                              color: Color(0xFFFCF8F7),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20),
-                                              ),
-                                              child: Stack(
-                                                children: [
-                                                  Positioned(
-                                                    top: 20,
-                                                    left: 0,
-                                                    right: 0,
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text("Freemium 🧪",
-                                                          style: TextStyle(
-                                                            fontSize: 32,
-                                                            color: Color(0xFF000000),
-                                                          )
-                                                          ),
-                                                          Text("Onboard users with limited access.",
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                            color: Color(0xFF000000),
-                                                          ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                      )
-                                                    ),                                                 
-                                                ],
-                                              )
-                                            )
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          top: 200,
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children:[
-                                Text("What's included",
-                                style: TextStyle(
-                                  fontSize: 30,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                SizedBox(height: 10),
-                                Text("• Basic profile setup.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                Text("• Limited mood tracking (3 days).",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                Text("• Explore therapists (no booking).",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                Text("• 1 self-help article/week.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                Text("• No appointment access.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                                Text("• No therapist chat.",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Color(0xFF000000),
-                                ),
-                                ),
-                              ]
-                            )
-                            ),
-                            ),
-                            Positioned(
-                              top: 500,
-                              left: 0,
-                              right: 0,
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(40, 0, 40, 0),
-                                child: SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.07,
-                                  child: ElevatedButton(
-                                    onPressed: (){
-                                      Navigator.push(
-                                        context, 
-                                        MaterialPageRoute(
-                                          builder: (context) => ClientSubscription()
-                                          ),
-                                          );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Color(
-                                                          0xFFB3261E,
-                                                        ),
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                20,
-                                                              ),
-                                                        ),
-                                                        elevation: 6,
-                                                      ), 
-                                    child: Text("Upgrade Plan",
-                                    style: TextStyle(
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFFFFFFFF),
-                                    ))),
-                                )
-                                ),
-                            ),
-                      ],
-                    )
-                  )
-                  )
-                  ),
-                ]
+      body: Stack(
+        children: [
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
               ),
             ),
+          ),
+          
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 120.0,
+                floating: false,
+                pinned: true,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  centerTitle: false,
+                  title: Text(
+                    "My Plan",
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      _buildActivePlanCard(),
+                      const SizedBox(height: 40),
+                      Text(
+                        "What's included",
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildBenefitItem(Icons.person_outline_rounded, "Basic profile setup"),
+                      _buildBenefitItem(Icons.analytics_outlined, "Mood tracking (3 days)"),
+                      _buildBenefitItem(Icons.search_rounded, "Explore therapists"),
+                      _buildBenefitItem(Icons.article_outlined, "1 self-help article / week"),
+                      const SizedBox(height: 32),
+                      Text(
+                        "Locked Features",
+                        style: GoogleFonts.outfit(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white.withOpacity(0.3),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildLockedItem("Therapist booking"),
+                      _buildLockedItem("Direct chat access"),
+                      _buildLockedItem("Unlimited mood history"),
+                      const SizedBox(height: 48),
+                      _buildUpgradeButton(context),
+                      const SizedBox(height: 120),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActivePlanCard() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        color: Colors.white.withOpacity(0.1),
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Freemium",
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "ACTIVE",
+                    style: GoogleFonts.outfit(
+                      color: const Color(0xFF065643),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Experience the essentials of mental\nwellness at no cost.",
+              style: GoogleFonts.outfit(
+                color: Colors.white.withOpacity(0.7),
+                fontSize: 16,
+                height: 1.4,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBenefitItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white70, size: 18),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            text,
+            style: GoogleFonts.outfit(
+              fontSize: 16,
+              color: Colors.white.withOpacity(0.8),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLockedItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Row(
+        children: [
+          Icon(Icons.lock_outline_rounded, color: Colors.white.withOpacity(0.2), size: 18),
+          const SizedBox(width: 16),
+          Text(
+            text,
+            style: GoogleFonts.outfit(
+              fontSize: 15,
+              color: Colors.white.withOpacity(0.2),
+              fontWeight: FontWeight.w400,
+              decoration: TextDecoration.lineThrough,
+              decorationColor: Colors.white.withOpacity(0.2),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpgradeButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const ClientSubscription()),
+        );
+      },
+      child: Container(
+        width: double.infinity,
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          "Upgrade Your Plan",
+          style: GoogleFonts.outfit(
+            color: const Color(0xFF065643),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

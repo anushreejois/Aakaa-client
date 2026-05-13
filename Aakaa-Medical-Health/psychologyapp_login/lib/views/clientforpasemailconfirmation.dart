@@ -1,5 +1,5 @@
-import "package:flutter/material.dart";
-import "package:psychologyapp_login/controllers/signup_loginfunctionality.dart";
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ClientForPasEmailVerification extends StatefulWidget {
   final String email;
@@ -14,163 +14,169 @@ class ClientForPasEmailVerification extends StatefulWidget {
 }
 
 class _ClientForPasEmailVerificationState extends State<ClientForPasEmailVerification> {
-  final SignupLoginFunctionality signupFunctionality = SignupLoginFunctionality();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFB3261E),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFB3261E),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFFFFFFFF), size: 30),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      body: Stack(
+        children: [
+          // Background Gradient
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+              ),
+            ),
+          ),
 
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-              child: const Center(
-                child: Text(
-                  "Verify email address",
-                  style: TextStyle(
-                    color: Color(0xFFFFFFFF),
-                    fontSize: 38,
-                    fontWeight: FontWeight.normal,
+          SafeArea(
+            child: Column(
+              children: [
+                // Custom App Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 24),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        "Verify Email",
+                        style: GoogleFonts.outfit(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 40),
-            Expanded(
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                height: MediaQuery.of(context).size.height * 0.75,
-                width: MediaQuery.of(context).size.width * 1.0,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      // ignore: deprecated_member_use
-                      color: Color(0xFF3E64FF).withOpacity(0.5),
-                      spreadRadius: 15,
-                      blurRadius: 22.3,
-                      offset: Offset(0, 1), // changes position of shadow
-                    ),
-                  ],
-                  color: Color(0xFFFFFFFF),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(50),
-                    topRight: Radius.circular(50),
-                  ),
-                ),
-                child: Card(
-                  elevation: 20,
-                  color: Color(0xFFFFFFFF),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: SizedBox(
-                    child: Stack(
-                      children: [
-                        Positioned(
-                          top: 30,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.75,
-                              height: 250,
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    // ignore: deprecated_member_use
-                                    color: Color(0xFF3E64FF).withOpacity(0.5),
-                                    spreadRadius: 5,
-                                    blurRadius: 5,
-                                    offset: Offset(
-                                      5,
-                                      5,
-                                    ), // changes position of shadow
-                                  ),
-                                ],
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  'assets/images/otp_auth.png',
-                                  fit: BoxFit.fill,
+
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 60),
+                          
+                          // Verification Icon
+                          Container(
+                            padding: const EdgeInsets.all(40),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.1),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white.withOpacity(0.1), width: 2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 40,
+                                  offset: const Offset(0, 10),
                                 ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.mark_email_read_rounded,
+                              size: 80,
+                              color: Colors.white,
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 60),
+                          
+                          Text(
+                            "Check your inbox",
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.outfit(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: GoogleFonts.outfit(
+                                fontSize: 16,
+                                color: Colors.white.withOpacity(0.8),
+                                height: 1.6,
+                              ),
+                              children: [
+                                const TextSpan(text: "A verification email has been sent to\n"),
+                                TextSpan(
+                                  text: widget.email,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const TextSpan(text: "\n\nPlease follow the link in the email to securely reset your password."),
+                              ],
+                            ),
+                          ),
+                          
+                          const SizedBox(height: 80),
+                          
+                          // Back to Login Button
+                          _buildBackToLoginButton(context),
+                          
+                          const SizedBox(height: 32),
+                          
+                          // Resend Option
+                          TextButton(
+                            onPressed: () {
+                              // Handle resend logic
+                            },
+                            child: Text(
+                              "Didn't receive an email? Resend",
+                              style: GoogleFonts.outfit(
+                                color: Colors.white.withOpacity(0.8),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          top: 300,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              "Verify email address",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF000000),
-                              ),
-                            )
-                          )
-                        ),
-                        Positioned(
-                          top: 335,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              " The verification mail has been sent to",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF000000),
-                              ),
-                            )
-                          )
-                        ),
-                        Positioned(
-                          top: 350,
-                          left: 0,
-                          right: 0,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Text(
-                              widget.email,
-                              style: TextStyle(
-                                color: Color(0xFFF13C32),
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          
+                          const SizedBox(height: 60),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBackToLoginButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 65,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.popUntil(context, (route) => route.isFirst);
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF065643),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+          elevation: 0,
+        ),
+        child: Text(
+          "Back to Login",
+          style: GoogleFonts.outfit(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

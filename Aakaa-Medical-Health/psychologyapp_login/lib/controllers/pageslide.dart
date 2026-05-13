@@ -5,9 +5,15 @@ class PageSlide {
   int currentPage = 0;
 
   final List<String> infoTexts = [ 
-    "Info One",
-    "Info Two",
-    "Info Three",
+    "Aakaa: Your Inner Sky\nDiscover a sanctuary for healing, growth, and mindful living.",
+    "Personalized Therapy\nConnect with professional psychologists tailored to your unique journey.",
+    "Breathe. Heal. Grow.\nEmpowering your mind with evidence-based practices and care.",
+  ];
+
+  final List<IconData> infoIcons = [
+    Icons.auto_awesome_rounded,
+    Icons.psychology_rounded,
+    Icons.favorite_rounded,
   ];
 
   /// Called when user swipes or changes page manually

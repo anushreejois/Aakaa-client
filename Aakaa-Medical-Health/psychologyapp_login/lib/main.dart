@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/getstarted.dart';
 
 void main() async{
@@ -28,13 +29,68 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Aakaa',
       theme: ThemeData(
-        // Adding Malgonic Gothic as the default font family
-        fontFamily: 'MalgunGothic',
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF065643),
+          primary: const Color(0xFF065643),
+          onPrimary: const Color(0xFFFFF7F5),
+          secondary: const Color(0xFF0A7D62),
+          surface: const Color(0xFFFFF7F5),
+          onSurface: const Color(0xFF000000),
+          background: const Color(0xFFFFF7F5),
+          error: const Color(0xFFB00020),
+        ),
+        textTheme: GoogleFonts.outfitTextTheme(),
+        scaffoldBackgroundColor: const Color(0xFFFFF7F5),
+        
+        // Premium iOS-style Card Theme
+        cardTheme: CardThemeData(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          color: Colors.white.withOpacity(0.8),
+        ),
+        
+        // Premium Button Theme
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+        
+        // Input Decoration Theme for a clean iOS look
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: const Color(0xFFFFF7F5),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Color(0xFF065643), width: 1.5),
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        ),
       ),
-      debugShowCheckedModeBanner: false, // Remove debug banner
-      home: const GetStarted(), // Opening the app with get started screen
+      debugShowCheckedModeBanner: false,
+      home: const GetStarted(),
     );
   }
 }
-

@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:psychologyapp_login/views/findtherapist.dart';
+import 'package:psychologyapp_login/views/clientnotification.dart';
+import 'package:psychologyapp_login/views/daily_affirmation.dart';
+import 'package:psychologyapp_login/views/disorders_library.dart';
 
 class ClientMenu extends StatefulWidget {
   final String email;
@@ -12,385 +17,216 @@ class _ClientMenuState extends State<ClientMenu>{
   String get alternatescreenname => widget.email.split('@').first;
   String screenname = "";
   String get result => screenname.isNotEmpty ? screenname : alternatescreenname;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
-      appBar: AppBar(
-        backgroundColor:  Color(0xFFFFFFFF),
-        automaticallyImplyLeading: false,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                "Welcome,",
-                style: TextStyle(
-                  color: Color(0xFF000000),
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                result,
-                style: TextStyle(
-                  color: Color(0xFF000000),
-                  fontSize: 18,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              ],
-            ),
-            IconButton(
-              onPressed: (){
-                // TODO: Implement notification functionality
-              }, icon: Icon(
-                Icons.notifications_none,
-                color: Color(0xFF000000),
-                size: 35
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Column(
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          // Premium Header with Welcome Message
+          SliverAppBar(
+            expandedHeight: 140.0,
+            floating: false,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: const Color(0xFFFFF7F5),
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              centerTitle: false,
+              title: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width * 0.86,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFB3261E),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                        ),
-                    child: Card(
-                      elevation: 20,
-                      color: Color(0xFFB3261E),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            top: 10,
-                            left: 10,
-                            child: Text(
-                              "Mental\nHealthcare",
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontSize: 36,
-                                fontWeight: FontWeight.bold,
-                              )
-                            )
-                          ),
-                          Positioned(
-                            top: 110,
-                            left: 10,
-                            child: Text(
-                              "Book your next\nonline appointments",
-                              style: TextStyle(
-                                color: Color(0xFFFFFFFF),
-                                fontSize: 20,
-                                fontWeight: FontWeight.normal,
-                              )
-                            )
-                          ),
-                        ],
-                      )
+                  Text(
+                    "Welcome,",
+                    style: GoogleFonts.outfit(
+                      color: const Color(0xFF065643).withOpacity(0.7),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Container(
-                        width: MediaQuery.of(context).size.width * 0.85,
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                          BoxShadow(
-                            // ignore: deprecated_member_use
-                            color: Color(0xFF3E64FF).withOpacity(0.5),
-                            spreadRadius: 3,
-                            blurRadius: 4,
-                            offset: Offset(0, 4), // changes position of shadow
-                          ),
-                        ],
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                          child: Image.asset(
-                            'assets/images/MenuCard.jpeg',
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              Text("Scroll up to view more options"),
-                              SizedBox(height: 20),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height: MediaQuery.of(context).size.height * 0.1,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                            BoxShadow(
-                              // ignore: deprecated_member_use
-                              color: Color(0xFF3E64FF).withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 4,
-                              offset: Offset(0, 4), // changes position of shadow
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(20),
-                                 ),
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    // TODO
-                                  }, 
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFFF7F7),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    )
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("About us",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),),
-                                          Text("Find it here",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.45
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: Color(0xFF222B45),
-                                        size: 25,
-                                      ),
-                                    ],
-                                    )
-                                    ),
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height: MediaQuery.of(context).size.height * 0.1,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                            BoxShadow(
-                              // ignore: deprecated_member_use
-                              color: Color(0xFF3E64FF).withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 4,
-                              offset: Offset(0, 4), // changes position of shadow
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(20),
-                                 ),
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    // TODO
-                                  }, 
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFFF7F7),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    )
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("About Psychological Disorders ",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),),
-                                          Text("Find it here",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          ),
-                                        ],
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: Color(0xFF222B45),
-                                        size: 25,
-                                      ),
-                                    ],
-                                    )
-                                    ),
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height: MediaQuery.of(context).size.height * 0.1,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                            BoxShadow(
-                              // ignore: deprecated_member_use
-                              color: Color(0xFF3E64FF).withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 4,
-                              offset: Offset(0, 4), // changes position of shadow
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(20),
-                                 ),
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    // TODO
-                                  }, 
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFFF7F7),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    )
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("Find a therapist here",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),),
-                                          Text("Find it here",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.2
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: Color(0xFF222B45),
-                                        size: 25,
-                                      ),
-                                    ],
-                                    )
-                                    ),
-                              ),
-                              SizedBox(height: 20),
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.85,
-                                height: MediaQuery.of(context).size.height * 0.1,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                            BoxShadow(
-                              // ignore: deprecated_member_use
-                              color: Color(0xFF3E64FF).withOpacity(0.5),
-                              spreadRadius: 0,
-                              blurRadius: 4,
-                              offset: Offset(0, 4), // changes position of shadow
-                            ),
-                          ],
-                          borderRadius: BorderRadius.circular(20),
-                                 ),
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    // TODO
-                                  }, 
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFFFF7F7),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
-                                    )
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text("View Chat",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),),
-                                          Text("Find it here",
-                                          style: TextStyle(
-                                            color: Color(0xFF000000),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                          ),
-                                        ],
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.42
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: Color(0xFF222B45),
-                                        size: 25,
-                                      ),
-                                    ],
-                                    )
-                                    ),
-                              ),
-                              SizedBox(height: 10, width: MediaQuery.of(context).size.width * 0.86)
-                            ],
-                            ),
-                        ),
-                      )
+                  Text(
+                    result,
+                    style: GoogleFonts.outfit(
+                      color: const Color(0xFF065643),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                ],
+              ),
+              background: Container(color: const Color(0xFFFFF7F5)),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_none_rounded, color: Color(0xFF065643), size: 28),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ClientNotification())),
+                ),
+              ),
+            ],
+            automaticallyImplyLeading: false,
+          ),
+
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Featured Promo Card
+                  _buildFeaturedCard(),
+                  
+                  const SizedBox(height: 32),
+                  
+                  Text(
+                    "Quick Actions",
+                    style: GoogleFonts.outfit(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF065643),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  _buildMenuTile(Icons.auto_awesome_outlined, "Daily Affirmation", "Your positive thought for today", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DailyAffirmation()))),
+                  const SizedBox(height: 12),
+                  _buildMenuTile(Icons.psychology_outlined, "Disorders", "Educational resources", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DisordersLibrary()))),
+                  const SizedBox(height: 12),
+                  _buildMenuTile(Icons.person_search_outlined, "Find Therapist", "Book your next session", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FindTherapist()))),
+                  const SizedBox(height: 12),
+                  _buildMenuTile(Icons.chat_bubble_outline_rounded, "Message Doctor", "View your conversations"),
+                  
+                  const SizedBox(height: 120), // Bottom padding
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeaturedCard() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(32),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF065643), Color(0xFF0A7D62)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF065643).withOpacity(0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Abstract Decorative Shapes
+          Positioned(
+            right: -20,
+            top: -20,
+            child: CircleAvatar(
+              radius: 60,
+              backgroundColor: Colors.white.withOpacity(0.05),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    "NEW FEATURE",
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  "Mental\nHealthcare",
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFFFFF7F5),
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Book your next online\nappointments seamlessly",
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFFFFF7F5).withOpacity(0.8),
+                    fontSize: 16,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuTile(IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF065643).withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        leading: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFF065643).withOpacity(0.05),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Icon(icon, color: const Color(0xFF065643), size: 24),
+        ),
+        title: Text(
+          title,
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF065643),
+            fontSize: 17,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.outfit(
+            color: Colors.grey[600],
+            fontSize: 13,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Color(0xFF065643)),
+        onTap: onTap,
       ),
     );
   }
