@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class ClientSubscription extends StatefulWidget {
   const ClientSubscription({super.key});
@@ -14,101 +15,88 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+      body: ZenBackground(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 120.0,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                centerTitle: false,
+                title: Text(
+                  "Subscription",
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
               ),
             ),
-          ),
-          
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 120.0,
-                floating: false,
-                pinned: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  centerTitle: false,
-                  title: Text(
-                    "Subscription",
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
 
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      Text(
-                        "Choose the plan that's right for you",
-                        style: GoogleFonts.outfit(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.5),
-                        ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      "Choose the plan that's right for you",
+                      style: GoogleFonts.outfit(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.5),
                       ),
-                      const SizedBox(height: 32),
-                      
-                      _buildPlanCard(0, "Freemium", "🧪", "The essentials", "Free", [
-                        "Basic profile setup",
-                        "3-day mood tracking",
-                        "Explore therapists",
-                      ]),
-                      const SizedBox(height: 16),
-                      _buildPlanCard(1, "Basic", "🎯", "For starters", "₹499/mo", [
-                        "Mood tracking + journal",
-                        "5+ self-help tools",
-                        "Limited therapist chat",
-                        "Appointment access",
-                      ]),
-                      const SizedBox(height: 16),
-                      _buildPlanCard(2, "Premium", "💎", "Best value", "₹999/mo", [
-                        "Unlimited therapist chat",
-                        "Full self-help library",
-                        "AI mood insights",
-                        "Session notes download",
-                        "Priority booking",
-                      ]),
-                      const SizedBox(height: 16),
-                      _buildPlanCard(3, "Platinum", "👑", "VIP care", "₹1999/mo", [
-                        "Emergency support line",
-                        "Dedicated therapist match",
-                        "AI coach & habits",
-                        "Weekly PDF reports",
-                        "Personalized wellness plan",
-                      ]),
-                      
-                      const SizedBox(height: 48),
-                      _buildContinueButton(),
-                      const SizedBox(height: 60),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 32),
+                    
+                    _buildPlanCard(0, "Freemium", "🧪", "The essentials", "Free", [
+                      "Basic profile setup",
+                      "3-day mood tracking",
+                      "Explore therapists",
+                    ]),
+                    const SizedBox(height: 16),
+                    _buildPlanCard(1, "Basic", "🎯", "For starters", "₹499/mo", [
+                      "Mood tracking + journal",
+                      "5+ self-help tools",
+                      "Limited therapist chat",
+                      "Appointment access",
+                    ]),
+                    const SizedBox(height: 16),
+                    _buildPlanCard(2, "Premium", "💎", "Best value", "₹999/mo", [
+                      "Unlimited therapist chat",
+                      "Full self-help library",
+                      "AI mood insights",
+                      "Session notes download",
+                      "Priority booking",
+                    ]),
+                    const SizedBox(height: 16),
+                    _buildPlanCard(3, "Platinum", "👑", "VIP care", "₹1999/mo", [
+                      "Emergency support line",
+                      "Dedicated therapist match",
+                      "AI coach & habits",
+                      "Weekly PDF reports",
+                      "Personalized wellness plan",
+                    ]),
+                    
+                    const SizedBox(height: 48),
+                    _buildContinueButton(),
+                    const SizedBox(height: 60),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class DailyAffirmation extends StatefulWidget {
   const DailyAffirmation({super.key});
@@ -59,148 +60,113 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Animated Gradient Background
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF065643),
-                  Color(0xFF0A7D62),
-                  Color(0xFF065643),
-                ],
-              ),
-            ),
-          ),
-          
-          // Decorative Circles
-          Positioned(
-            top: -100,
-            right: -100,
-            child: CircleAvatar(
-              radius: 200,
-              backgroundColor: Colors.white.withOpacity(0.05),
-            ),
-          ),
-          Positioned(
-            bottom: -50,
-            left: -50,
-            child: CircleAvatar(
-              radius: 150,
-              backgroundColor: Colors.white.withOpacity(0.05),
-            ),
-          ),
-
-          SafeArea(
-            child: Column(
-              children: [
-                // Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      Text(
-                        "Daily Affirmation",
-                        style: GoogleFonts.outfit(
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                      const SizedBox(width: 48), // Balance for close button
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                // Affirmation Content
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Column(
-                      children: [
-                        const Icon(Icons.format_quote_rounded, color: Colors.white30, size: 60),
-                        const SizedBox(height: 24),
-                        Text(
-                          _currentAffirmation,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            height: 1.4,
-                          ),
-                        ),
-                        const SizedBox(height: 40),
-                        Container(
-                          height: 2,
-                          width: 40,
-                          color: Colors.white.withOpacity(0.3),
-                        ),
-                      ],
+      body: ZenBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+                      onPressed: () => Navigator.pop(context),
                     ),
-                  ),
+                    Text(
+                      "Daily Affirmation",
+                      style: GoogleFonts.outfit(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    const SizedBox(width: 48), // Balance for close button
+                  ],
                 ),
+              ),
 
-                const Spacer(),
+              const Spacer(),
 
-                // Bottom Interaction
-                Padding(
-                  padding: const EdgeInsets.all(40.0),
+              // Affirmation Content
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
                   child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: _nextAffirmation,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: Colors.white.withOpacity(0.2)),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
-                              const SizedBox(width: 12),
-                              Text(
-                                "New Affirmation",
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      const Icon(Icons.format_quote_rounded, color: Colors.white30, size: 60),
                       const SizedBox(height: 24),
                       Text(
-                        "Take a deep breath and reflect.",
+                        _currentAffirmation,
+                        textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 14,
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          height: 1.4,
                         ),
+                      ),
+                      const SizedBox(height: 40),
+                      Container(
+                        height: 2,
+                        width: 40,
+                        color: Colors.white.withOpacity(0.3),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+
+              const Spacer(),
+
+              // Bottom Interaction
+              Padding(
+                padding: const EdgeInsets.all(40.0),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: _nextAffirmation,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(30),
+                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
+                            const SizedBox(width: 12),
+                            Text(
+                              "New Affirmation",
+                              style: GoogleFonts.outfit(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Take a deep breath and reflect.",
+                      style: GoogleFonts.outfit(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

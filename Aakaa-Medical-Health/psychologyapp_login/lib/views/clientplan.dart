@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/clientsubscription.dart';
+import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class ClientPlan extends StatefulWidget {
   const ClientPlan({super.key});
@@ -13,91 +14,78 @@ class _ClientPlanState extends State<ClientPlan>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+      body: ZenBackground(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 120.0,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                centerTitle: false,
+                title: Text(
+                  "My Plan",
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
               ),
             ),
-          ),
-          
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 120.0,
-                floating: false,
-                pinned: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  centerTitle: false,
-                  title: Text(
-                    "My Plan",
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
 
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      _buildActivePlanCard(),
-                      const SizedBox(height: 40),
-                      Text(
-                        "What's included",
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 10),
+                    _buildActivePlanCard(),
+                    const SizedBox(height: 40),
+                    Text(
+                      "What's included",
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                      const SizedBox(height: 16),
-                      _buildBenefitItem(Icons.person_outline_rounded, "Basic profile setup"),
-                      _buildBenefitItem(Icons.analytics_outlined, "Mood tracking (3 days)"),
-                      _buildBenefitItem(Icons.search_rounded, "Explore therapists"),
-                      _buildBenefitItem(Icons.article_outlined, "1 self-help article / week"),
-                      const SizedBox(height: 32),
-                      Text(
-                        "Locked Features",
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white.withOpacity(0.3),
-                        ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildBenefitItem(Icons.person_outline_rounded, "Basic profile setup"),
+                    _buildBenefitItem(Icons.analytics_outlined, "Mood tracking (3 days)"),
+                    _buildBenefitItem(Icons.search_rounded, "Explore therapists"),
+                    _buildBenefitItem(Icons.article_outlined, "1 self-help article / week"),
+                    const SizedBox(height: 32),
+                    Text(
+                      "Locked Features",
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white.withOpacity(0.3),
                       ),
-                      const SizedBox(height: 16),
-                      _buildLockedItem("Therapist booking"),
-                      _buildLockedItem("Direct chat access"),
-                      _buildLockedItem("Unlimited mood history"),
-                      const SizedBox(height: 48),
-                      _buildUpgradeButton(context),
-                      const SizedBox(height: 120),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildLockedItem("Therapist booking"),
+                    _buildLockedItem("Direct chat access"),
+                    _buildLockedItem("Unlimited mood history"),
+                    const SizedBox(height: 48),
+                    _buildUpgradeButton(context),
+                    const SizedBox(height: 120),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

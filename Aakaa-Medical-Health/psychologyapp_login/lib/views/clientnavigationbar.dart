@@ -7,8 +7,8 @@ import 'package:psychologyapp_login/views/clientplan.dart';
 import 'package:psychologyapp_login/views/clientprofile.dart';
 
 class ClientNavigationBar extends StatefulWidget {
-  final String loginemail;
-  const ClientNavigationBar({super.key, required this.loginemail});
+  final String email;
+  const ClientNavigationBar({super.key, required this.email});
 
   @override
   State<ClientNavigationBar> createState() => _ClientNavigationBarState();
@@ -22,10 +22,10 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
   void initState(){
     super.initState();
     _screens = [
-      ClientMenu(email: widget.loginemail),
+      ClientMenu(email: widget.email),
       ClientActivity(),
       ClientPlan(),
-      ClientProfile(email: widget.loginemail, onNavigateToTab: navigateToTab),
+      ClientProfile(email: widget.email, onNavigateToTab: navigateToTab),
     ];
   }
 

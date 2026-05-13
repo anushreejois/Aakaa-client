@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../controllers/activity_controller.dart';
 import 'dart:ui';
+import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class MoodJourney extends StatelessWidget {
   const MoodJourney({super.key});
@@ -9,65 +10,70 @@ class MoodJourney extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7F5),
-      body: CustomScrollView(
-        slivers: [
-          _buildSliverAppBar(context),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildInsightsCard(),
-                  const SizedBox(height: 32),
-                  Text(
-                    "Weekly Trends",
-                    style: GoogleFonts.outfit(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF065643),
-                    ),
+      body: ZenBackground(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 120,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                centerTitle: false,
+                title: Text(
+                  "Mood Journey",
+                  style: GoogleFonts.outfit(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
                   ),
-                  const SizedBox(height: 16),
-                  _buildMoodChart(),
-                  const SizedBox(height: 40),
-                  Text(
-                    "Recent Check-ins",
-                    style: GoogleFonts.outfit(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF065643),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildMoodHistoryList(),
-                ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildSliverAppBar(BuildContext context) {
-    return SliverAppBar(
-      expandedHeight: 120,
-      floating: false,
-      pinned: true,
-      backgroundColor: const Color(0xFF065643),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-        onPressed: () => Navigator.pop(context),
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        title: Text(
-          "Mood Journey",
-          style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.white),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInsightsCard(),
+                    const SizedBox(height: 32),
+                    Text(
+                      "Weekly Trends",
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildMoodChart(),
+                    const SizedBox(height: 40),
+                    Text(
+                      "Recent Check-ins",
+                      style: GoogleFonts.outfit(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildMoodHistoryList(),
+                    const SizedBox(height: 120),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        centerTitle: false,
-        titlePadding: const EdgeInsets.only(left: 56, bottom: 16),
       ),
     );
   }
@@ -76,19 +82,9 @@ class MoodJourney extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF065643), Color(0xFF0A7D62)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(32),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF065643).withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        border: Border.all(color: Colors.white.withOpacity(0.2)),
       ),
       child: Row(
         children: [
@@ -124,45 +120,41 @@ class MoodJourney extends StatelessWidget {
 
   Widget _buildMoodChart() {
     return Container(
-      height: 200,
-      padding: const EdgeInsets.all(20),
+      height: 220,
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 20,
-          ),
-        ],
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(32),
+        border: Border.all(color: Colors.white.withOpacity(0.1)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: ActivityController.moodHistory.map((m) {
-          double heightFactor = (m['value'] + 1) / 5; // 0-4 scale to 0.2-1.0
+          double heightFactor = (m['value'] + 1) / 5; 
           return Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                width: 25,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 500),
+                width: 30,
                 height: 120 * heightFactor,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      const Color(0xFF0A7D62).withOpacity(heightFactor),
-                      const Color(0xFF065643).withOpacity(heightFactor * 0.5),
+                      Colors.white.withOpacity(0.8),
+                      Colors.white.withOpacity(0.1),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
                 m['day'],
-                style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey[400]),
+                style: GoogleFonts.outfit(fontSize: 12, color: Colors.white.withOpacity(0.4)),
               ),
             ],
           );
@@ -181,19 +173,19 @@ class MoodJourney extends StatelessWidget {
           margin: const EdgeInsets.only(bottom: 12),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.grey.withOpacity(0.05)),
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: Colors.white.withOpacity(0.05)),
           ),
           child: Row(
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF7F5),
+                  color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.favorite_rounded, color: Color(0xFF0A7D62), size: 20),
+                child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -202,16 +194,16 @@ class MoodJourney extends StatelessWidget {
                   children: [
                     Text(
                       "Felt Great",
-                      style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF065643)),
+                      style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: Colors.white),
                     ),
                     Text(
                       "Today, 10:30 AM",
-                      style: GoogleFonts.outfit(fontSize: 12, color: Colors.grey),
+                      style: GoogleFonts.outfit(fontSize: 12, color: Colors.white.withOpacity(0.4)),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.black12),
+              Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white.withOpacity(0.2)),
             ],
           ),
         );
