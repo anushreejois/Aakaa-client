@@ -31,13 +31,13 @@ class _ZenBackgroundState extends State<ZenBackground> with SingleTickerProvider
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Base Deep Green Gradient
+        // Base Warm Cream Daylight Gradient
         Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+              colors: [Color(0xFFFFF7F5), Color(0xFFFFEFEA), Color(0xFFFFF7F5)],
             ),
           ),
         ),
@@ -54,8 +54,8 @@ class _ZenBackgroundState extends State<ZenBackground> with SingleTickerProvider
                       20 * sin(_controller.value * 2 * pi),
                       30 * cos(_controller.value * 2 * pi),
                     ),
-                    color: Colors.white.withOpacity(0.02),
-                    size: 300,
+                    color: const Color(0xFF065643).withValues(alpha: 0.08),
+                    size: 350,
                     top: -50,
                     right: -100,
                   ),
@@ -64,8 +64,8 @@ class _ZenBackgroundState extends State<ZenBackground> with SingleTickerProvider
                       40 * cos(_controller.value * 2 * pi),
                       20 * sin(_controller.value * 2 * pi),
                     ),
-                    color: Colors.white.withOpacity(0.03),
-                    size: 250,
+                    color: const Color(0xFFFF7A59).withValues(alpha: 0.10),
+                    size: 300,
                     bottom: 100,
                     left: -80,
                   ),
@@ -74,7 +74,7 @@ class _ZenBackgroundState extends State<ZenBackground> with SingleTickerProvider
                       25 * sin(_controller.value * 2 * pi + pi),
                       35 * cos(_controller.value * 2 * pi + pi),
                     ),
-                    color: Colors.white.withOpacity(0.02),
+                    color: const Color(0xFF0A7D62).withValues(alpha: 0.06),
                     size: 400,
                     top: 200,
                     right: 50,
@@ -113,7 +113,7 @@ class _ZenBackgroundState extends State<ZenBackground> with SingleTickerProvider
           color: color,
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(color.opacity * 2),
+              color: color.withValues(alpha: min(1.0, color.a * 2)),
               blurRadius: 100,
               spreadRadius: 20,
             ),

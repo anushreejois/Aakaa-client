@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/views/disorder_detail_screen.dart';
 
 class DisordersLibrary extends StatefulWidget {
   const DisordersLibrary({super.key});
@@ -47,7 +48,7 @@ class _DisordersLibraryState extends State<DisordersLibrary> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
                 onPressed: () => Navigator.pop(context),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -56,7 +57,7 @@ class _DisordersLibraryState extends State<DisordersLibrary> {
                 title: Text(
                   "Disorders Hub",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
@@ -97,16 +98,17 @@ class _DisordersLibraryState extends State<DisordersLibrary> {
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: TextField(
         style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w600),
         cursorColor: const Color(0xFF065643),
         decoration: InputDecoration(
           hintText: "Search library...",
-          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withOpacity(0.4), fontSize: 15),
+          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4), fontSize: 15),
           prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF065643), size: 22),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18),
@@ -119,37 +121,49 @@ class _DisordersLibraryState extends State<DisordersLibrary> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(20),
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: const Color(0xFF065643).withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(disorder['icon'], color: Colors.white, size: 24),
+          child: Icon(disorder['icon'], color: const Color(0xFF065643), size: 24),
         ),
         title: Text(
           disorder['title'],
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: const Color(0xFF065643),
             fontSize: 18,
           ),
         ),
         subtitle: Text(
           disorder['description'],
           style: GoogleFonts.outfit(
-            color: Colors.white.withOpacity(0.6),
+            color: Colors.grey[600],
             fontSize: 13,
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.white54),
-        onTap: () {},
+        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey[400]),
+        onTap: () {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 300),
+              pageBuilder: (context, animation, secondaryAnimation) => DisorderDetailScreen(disorder: disorder),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return FadeTransition(opacity: animation, child: child);
+              },
+            ),
+          );
+        },
       ),
     );
   }

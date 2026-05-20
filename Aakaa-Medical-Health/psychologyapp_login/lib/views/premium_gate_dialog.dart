@@ -14,12 +14,12 @@ class PremiumAccessDialog extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(32),
         decoration: BoxDecoration(
-          color: const Color(0xFF065643).withOpacity(0.95),
+          color: const Color(0xFF065643).withValues(alpha: 0.95),
           borderRadius: BorderRadius.circular(40),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.3),
+              color: Colors.black.withValues(alpha: 0.3),
               blurRadius: 40,
               offset: const Offset(0, 20),
             ),
@@ -31,7 +31,7 @@ class PremiumAccessDialog extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.lock_person_rounded, color: Colors.white, size: 40),
@@ -50,7 +50,7 @@ class PremiumAccessDialog extends StatelessWidget {
               "Unlock $featureName and more by upgrading to a Premium plan.",
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.white.withValues(alpha: 0.7),
                 fontSize: 16,
                 height: 1.5,
               ),
@@ -81,7 +81,7 @@ class PremiumAccessDialog extends StatelessWidget {
               onPressed: () => Navigator.pop(context),
               child: Text(
                 "Maybe Later",
-                style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.5)),
+                style: GoogleFonts.outfit(color: Colors.white.withValues(alpha: 0.5)),
               ),
             ),
           ],

@@ -71,13 +71,13 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+                      icon: const Icon(Icons.close_rounded, color: Color(0xFF065643), size: 28),
                       onPressed: () => Navigator.pop(context),
                     ),
                     Text(
                       "Daily Affirmation",
                       style: GoogleFonts.outfit(
-                        color: Colors.white.withOpacity(0.8),
+                        color: const Color(0xFF065643),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 1,
@@ -97,13 +97,13 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
                   opacity: _fadeAnimation,
                   child: Column(
                     children: [
-                      const Icon(Icons.format_quote_rounded, color: Colors.white30, size: 60),
+                      Icon(Icons.format_quote_rounded, color: const Color(0xFF065643).withValues(alpha: 0.2), size: 60),
                       const SizedBox(height: 24),
                       Text(
                         _currentAffirmation,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.outfit(
-                          color: Colors.white,
+                          color: const Color(0xFF065643),
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           height: 1.4,
@@ -113,7 +113,7 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
                       Container(
                         height: 2,
                         width: 40,
-                        color: Colors.white.withOpacity(0.3),
+                        color: const Color(0xFF065643).withValues(alpha: 0.2),
                       ),
                     ],
                   ),
@@ -132,19 +132,20 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: Colors.white,
                           borderRadius: BorderRadius.circular(30),
-                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                          border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
+                          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 5))],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.refresh_rounded, color: Colors.white, size: 20),
+                            const Icon(Icons.refresh_rounded, color: Color(0xFF065643), size: 20),
                             const SizedBox(width: 12),
                             Text(
                               "New Affirmation",
                               style: GoogleFonts.outfit(
-                                color: Colors.white,
+                                color: const Color(0xFF065643),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -157,7 +158,7 @@ class _DailyAffirmationState extends State<DailyAffirmation> with SingleTickerPr
                     Text(
                       "Take a deep breath and reflect.",
                       style: GoogleFonts.outfit(
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.grey[600],
                         fontSize: 14,
                       ),
                     ),

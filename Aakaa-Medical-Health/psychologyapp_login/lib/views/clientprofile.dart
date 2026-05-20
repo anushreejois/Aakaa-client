@@ -6,12 +6,12 @@ import 'package:psychologyapp_login/views/clientlogin.dart';
 import 'package:psychologyapp_login/views/clientnotification.dart';
 import 'package:psychologyapp_login/views/languages.dart';
 import 'package:psychologyapp_login/views/helpandsupport.dart';
-import 'package:psychologyapp_login/views/info.dart';
 import 'package:psychologyapp_login/views/about_us.dart';
 import 'package:psychologyapp_login/views/message_hub.dart';
 import 'package:psychologyapp_login/controllers/plan_controller.dart';
 import 'package:psychologyapp_login/views/premium_gate_dialog.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/controllers/user_controller.dart';
 
 class ClientProfile extends StatefulWidget {
   final String email;
@@ -23,7 +23,6 @@ class ClientProfile extends StatefulWidget {
 }
 
 class _ClientProfileState extends State<ClientProfile> {
-  String _selectedAvatar = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop"; 
 
   void _handleMessagingAccess() {
     if (PlanController.isPremiumMember) {
@@ -55,7 +54,7 @@ class _ClientProfileState extends State<ClientProfile> {
                 title: Text(
                   "Profile",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
@@ -82,10 +81,10 @@ class _ClientProfileState extends State<ClientProfile> {
                     _buildSectionHeader("Preferences"),
                     const SizedBox(height: 16),
                     _buildGroupedCard([
-                      _buildSettingsTile(Icons.notifications_none_rounded, "Notifications", null, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ClientNotification()))),
-                      _buildSettingsTile(Icons.language_rounded, "Language", "English", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => Languages()))),
+                      _buildSettingsTile(Icons.notifications_none_rounded, "Notifications", null, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClientNotification()))),
+                      _buildSettingsTile(Icons.language_rounded, "Language", "English", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const Languages()))),
                       _buildSettingsTile(Icons.chat_bubble_outline_rounded, "My Messages", null, onTap: _handleMessagingAccess),
-                      _buildSettingsTile(Icons.help_outline_rounded, "Help & Support", null, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => HelpAndSupport()))),
+                      _buildSettingsTile(Icons.help_outline_rounded, "Help & Support", null, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpAndSupport()))),
                       _buildSettingsTile(Icons.info_outline_rounded, "About Aakaa", null, onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AboutUs()))),
                     ]),
                     const SizedBox(height: 32),
@@ -109,7 +108,7 @@ class _ClientProfileState extends State<ClientProfile> {
         style: GoogleFonts.outfit(
           fontSize: 14,
           fontWeight: FontWeight.bold,
-          color: Colors.white.withOpacity(0.5),
+          color: const Color(0xFF065643),
           letterSpacing: 1.2,
         ),
       ),
@@ -117,46 +116,53 @@ class _ClientProfileState extends State<ClientProfile> {
   }
 
   Widget _buildProfileHeader() {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.2)),
-      ),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: NetworkImage(_selectedAvatar),
+    return ValueListenableBuilder<UserModel>(
+      valueListenable: UserController.userNotifier,
+      builder: (context, user, child) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
           ),
-          const SizedBox(height: 16),
-          Text(
-            widget.email.split('@')[0],
-            style: GoogleFonts.outfit(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 50,
+                backgroundImage: NetworkImage(user.avatarUrl),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                user.fullName,
+                style: GoogleFonts.outfit(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF065643),
+                ),
+              ),
+              Text(
+                user.email.isNotEmpty ? user.email : widget.email,
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
           ),
-          Text(
-            widget.email,
-            style: GoogleFonts.outfit(
-              fontSize: 14,
-              color: Colors.white.withOpacity(0.6),
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildGroupedCard(List<Widget> children) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: Column(
         children: children,
@@ -167,10 +173,10 @@ class _ClientProfileState extends State<ClientProfile> {
   Widget _buildSettingsTile(IconData icon, String title, String? trailingText, {VoidCallback? onTap}) {
     return ListTile(
       onTap: onTap,
-      leading: Icon(icon, color: Colors.white.withOpacity(0.7), size: 22),
+      leading: Icon(icon, color: const Color(0xFF065643), size: 22),
       title: Text(
         title,
-        style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.w500),
+        style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w500),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -178,10 +184,10 @@ class _ClientProfileState extends State<ClientProfile> {
           if (trailingText != null)
             Text(
               trailingText,
-              style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.4), fontSize: 13),
+              style: GoogleFonts.outfit(color: Colors.grey[500], fontSize: 13),
             ),
           const SizedBox(width: 8),
-          Icon(Icons.arrow_forward_ios_rounded, color: Colors.white.withOpacity(0.2), size: 14),
+          Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[400], size: 14),
         ],
       ),
     );
@@ -201,9 +207,10 @@ class _ClientProfileState extends State<ClientProfile> {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.redAccent.withOpacity(0.1),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: Colors.redAccent.withOpacity(0.2)),
+          border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
         ),
         child: Center(
           child: Text(

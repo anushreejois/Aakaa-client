@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/models/therapist_model.dart';
+import 'package:psychologyapp_login/views/therapists/therapist_detail_screen.dart';
 
 class FindTherapist extends StatefulWidget {
   const FindTherapist({super.key});
@@ -54,7 +56,7 @@ class _FindTherapistState extends State<FindTherapist> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
                 onPressed: () => Navigator.pop(context),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -63,7 +65,7 @@ class _FindTherapistState extends State<FindTherapist> {
                 title: Text(
                   "Find Therapists",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
@@ -104,16 +106,17 @@ class _FindTherapistState extends State<FindTherapist> {
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: TextField(
         style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w600),
         cursorColor: const Color(0xFF065643),
         decoration: InputDecoration(
           hintText: "Search specialists...",
-          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withOpacity(0.4), fontSize: 15),
+          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4), fontSize: 15),
           prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF065643), size: 22),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18),
@@ -123,91 +126,116 @@ class _FindTherapistState extends State<FindTherapist> {
   }
 
   Widget _buildTherapistCard(Map<String, dynamic> therapist) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 35,
-                  backgroundImage: NetworkImage(therapist['avatar']),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        therapist['name'],
-                        style: GoogleFonts.outfit(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        therapist['specialty'],
-                        style: GoogleFonts.outfit(
-                          fontSize: 14,
-                          color: Colors.white.withOpacity(0.6),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
-                          const SizedBox(width: 4),
-                          Text(
-                            "${therapist['rating']} (${therapist['reviews']} reviews)",
-                            style: GoogleFonts.outfit(
-                              fontSize: 13,
-                              color: Colors.white.withOpacity(0.8),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 300),
+            pageBuilder: (context, animation, secondaryAnimation) => TherapistDetailScreen(
+              therapist: Therapist(
+                name: therapist['name'],
+                specialization: therapist['specialty'],
+                rating: therapist['rating'].toDouble(),
+                reviews: therapist['reviews'],
+                isOnline: true,
+                initials: therapist['name'].split(' ').last[0],
+                imageUrl: therapist['avatar'],
+              ),
+            ),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 24),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32),
+          border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 35,
+                    backgroundImage: NetworkImage(therapist['avatar']),
                   ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: (therapist['tags'] as List).map((tag) => Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          therapist['name'],
+                          style: GoogleFonts.outfit(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF065643),
+                          ),
+                        ),
+                        Text(
+                          therapist['specialty'],
+                          style: GoogleFonts.outfit(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                            const SizedBox(width: 4),
+                            Text(
+                              "${therapist['rating']} (${therapist['reviews']} reviews)",
+                              style: GoogleFonts.outfit(
+                                fontSize: 13,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    child: Text(
-                      tag,
-                      style: GoogleFonts.outfit(fontSize: 11, color: Colors.white.withOpacity(0.7)),
-                    ),
-                  )).toList(),
-                ),
-                Icon(Icons.arrow_forward_ios_rounded, color: Colors.white.withOpacity(0.3), size: 16),
-              ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF065643).withValues(alpha: 0.03),
+                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: (therapist['tags'] as List).map((tag) => Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF065643).withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        tag,
+                        style: GoogleFonts.outfit(fontSize: 11, color: const Color(0xFF065643)),
+                      ),
+                    )).toList(),
+                  ),
+                  Icon(Icons.arrow_forward_ios_rounded, color: Colors.grey[400], size: 16),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

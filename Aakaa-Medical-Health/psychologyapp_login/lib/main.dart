@@ -10,7 +10,7 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   Platform.isAndroid
       ? await Firebase.initializeApp(
-        options: FirebaseOptions(
+        options: const FirebaseOptions(
           apiKey: 'AIzaSyBpRNyesakDLooEXC6TzzTkinjeefOvctQ', 
           appId: '1:944267780019:android:8c70d305ac2d2fb286b5c6', 
           messagingSenderId: '944267780019', 
@@ -32,6 +32,12 @@ class MyApp extends StatelessWidget {
       title: 'Aakaa',
       theme: ThemeData(
         useMaterial3: true,
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: FadePageTransitionsBuilder(),
+            TargetPlatform.iOS: FadePageTransitionsBuilder(),
+          },
+        ),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF065643),
           primary: const Color(0xFF065643),
@@ -39,7 +45,6 @@ class MyApp extends StatelessWidget {
           secondary: const Color(0xFF0A7D62),
           surface: const Color(0xFFFFF7F5),
           onSurface: const Color(0xFF000000),
-          background: const Color(0xFFFFF7F5),
           error: const Color(0xFFB00020),
         ),
         textTheme: GoogleFonts.outfitTextTheme(),
@@ -51,7 +56,7 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(32),
           ),
-          color: Colors.white.withOpacity(0.8),
+          color: Colors.white.withValues(alpha: 0.8),
         ),
         
         // Premium Button Theme
@@ -91,6 +96,24 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: const GetStarted(),
+    );
+  }
+}
+
+class FadePageTransitionsBuilder extends PageTransitionsBuilder {
+  const FadePageTransitionsBuilder();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    return FadeTransition(
+      opacity: animation,
+      child: child,
     );
   }
 }

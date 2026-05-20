@@ -4,6 +4,7 @@ import 'therapists/session_hub.dart';
 import '../models/session_model.dart';
 import '../models/consultation_type.dart';
 import '../controllers/session_controller.dart';
+import '../widgets/zen_background.dart';
 
 class ClientMySession extends StatefulWidget {
   const ClientMySession({super.key});
@@ -18,97 +19,78 @@ class _ClientMySessionState extends State<ClientMySession>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF065643),
-                  Color(0xFF0A7D62),
-                  Color(0xFF065643),
-                ],
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: ZenBackground(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            // AppBar
+            SliverAppBar(
+              expandedHeight: 120.0,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
+                onPressed: () => Navigator.pop(context),
               ),
-            ),
-          ),
-          
-          // Decorative Circles
-          Positioned(
-            top: -50,
-            right: -100,
-            child: CircleAvatar(
-              radius: 150,
-              backgroundColor: Colors.white.withOpacity(0.03),
-            ),
-          ),
-
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // AppBar
-              SliverAppBar(
-                expandedHeight: 120.0,
-                floating: false,
-                pinned: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  centerTitle: false,
-                  title: Text(
-                    "My Sessions",
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                centerTitle: false,
+                title: Text(
+                  "My Sessions",
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF065643),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
                   ),
                 ),
               ),
+            ),
 
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 10),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    
+                    // Refined Segmented Control
+                    _buildSegmentedControl(),
+                    
+                    const SizedBox(height: 32),
+                    
+                    // Session List
+                    _selectedTabIndex == 0 
+                      ? _buildUpcomingSessions()
+                      : _buildPastSessions(),
                       
-                      // Refined Segmented Control
-                      _buildSegmentedControl(),
-                      
-                      const SizedBox(height: 32),
-                      
-                      // Session List
-                      _selectedTabIndex == 0 
-                        ? _buildUpcomingSessions()
-                        : _buildPastSessions(),
-                        
-                      const SizedBox(height: 100),
-                    ],
-                  ),
+                    const SizedBox(height: 100),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildSegmentedControl() {
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(6),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF065643).withValues(alpha: 0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
       ),
       child: Row(
         children: [
@@ -128,14 +110,29 @@ class _ClientMySessionState extends State<ClientMySession>{
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.white : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            gradient: isSelected 
+              ? const LinearGradient(
+                  colors: [Color(0xFF065643), Color(0xFF0A7D62)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: isSelected 
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFF065643).withValues(alpha: 0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : null,
           ),
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: GoogleFonts.outfit(
-              color: isSelected ? const Color(0xFF065643) : Colors.white.withOpacity(0.6),
+              color: isSelected ? Colors.white : const Color(0xFF065643).withValues(alpha: 0.6),
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
@@ -146,42 +143,52 @@ class _ClientMySessionState extends State<ClientMySession>{
   }
 
   Widget _buildUpcomingSessions() {
-    if (SessionController.upcomingSessions.isEmpty) return _buildEmptyState();
-    return Column(
-      children: SessionController.upcomingSessions.map((session) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: _buildSessionCard(
-            therapistName: session.therapistName,
-            date: "${session.startTime.day}/${session.startTime.month}/${session.startTime.year}",
-            time: "${session.startTime.hour}:${session.startTime.minute.toString().padLeft(2, '0')}",
-            status: "Confirmed",
-            isUpcoming: true,
-            initials: session.therapistInitials,
-            type: session.consultationType,
-          ),
+    return ValueListenableBuilder<List<TherapySession>>(
+      valueListenable: SessionController.upcomingSessionsNotifier,
+      builder: (context, sessions, child) {
+        if (sessions.isEmpty) return _buildEmptyState();
+        return Column(
+          children: sessions.map((session) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: _buildSessionCard(
+                therapistName: session.therapistName,
+                date: "${session.startTime.day}/${session.startTime.month}/${session.startTime.year}",
+                time: "${session.startTime.hour}:${session.startTime.minute.toString().padLeft(2, '0')}",
+                status: "Confirmed",
+                isUpcoming: true,
+                initials: session.therapistInitials,
+                type: session.consultationType,
+              ),
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 
   Widget _buildPastSessions() {
-    if (SessionController.pastSessions.isEmpty) return _buildEmptyState();
-    return Column(
-      children: SessionController.pastSessions.map((session) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: _buildSessionCard(
-            therapistName: session.therapistName,
-            date: "${session.startTime.day}/${session.startTime.month}/${session.startTime.year}",
-            time: "${session.startTime.hour}:${session.startTime.minute.toString().padLeft(2, '0')}",
-            status: "Completed",
-            isUpcoming: false,
-            initials: session.therapistInitials,
-            type: session.consultationType,
-          ),
+    return ValueListenableBuilder<List<TherapySession>>(
+      valueListenable: SessionController.pastSessionsNotifier,
+      builder: (context, sessions, child) {
+        if (sessions.isEmpty) return _buildEmptyState();
+        return Column(
+          children: sessions.map((session) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20.0),
+              child: _buildSessionCard(
+                therapistName: session.therapistName,
+                date: "${session.startTime.day}/${session.startTime.month}/${session.startTime.year}",
+                time: "${session.startTime.hour}:${session.startTime.minute.toString().padLeft(2, '0')}",
+                status: "Completed",
+                isUpcoming: false,
+                initials: session.therapistInitials,
+                type: session.consultationType,
+              ),
+            );
+          }).toList(),
         );
-      }).toList(),
+      },
     );
   }
 
@@ -190,11 +197,11 @@ class _ClientMySessionState extends State<ClientMySession>{
       child: Column(
         children: [
           const SizedBox(height: 60),
-          Icon(Icons.calendar_today_rounded, size: 60, color: Colors.white.withOpacity(0.1)),
+          Icon(Icons.calendar_today_rounded, size: 60, color: const Color(0xFF065643).withValues(alpha: 0.2)),
           const SizedBox(height: 16),
           Text(
             "No sessions found.",
-            style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.4)),
+            style: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.6), fontSize: 16),
           ),
         ],
       ),
@@ -216,11 +223,12 @@ class _ClientMySessionState extends State<ClientMySession>{
         borderRadius: BorderRadius.circular(32),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: const Color(0xFF065643).withValues(alpha: 0.06),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
         ],
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -238,6 +246,13 @@ class _ClientMySessionState extends State<ClientMySession>{
                       end: Alignment.bottomRight,
                     ),
                     borderRadius: BorderRadius.circular(18),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF065643).withValues(alpha: 0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   alignment: Alignment.center,
                   child: Text(
@@ -276,7 +291,7 @@ class _ClientMySessionState extends State<ClientMySession>{
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: _getStatusColor(status).withOpacity(0.1),
+                    color: _getStatusColor(status).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -309,7 +324,7 @@ class _ClientMySessionState extends State<ClientMySession>{
                       onPressed: () {},
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: const Color(0xFF065643).withOpacity(0.1)),
+                        side: BorderSide(color: const Color(0xFF065643).withValues(alpha: 0.1)),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       ),
                       child: Text(
@@ -370,14 +385,14 @@ class _ClientMySessionState extends State<ClientMySession>{
   Widget _buildInfoRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 16, color: const Color(0xFF065643).withOpacity(0.3)),
+        Icon(icon, size: 16, color: const Color(0xFF065643).withValues(alpha: 0.4)),
         const SizedBox(width: 8),
         Text(
           text,
           style: GoogleFonts.outfit(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: const Color(0xFF065643).withOpacity(0.7),
+            color: const Color(0xFF065643).withValues(alpha: 0.8),
           ),
         ),
       ],

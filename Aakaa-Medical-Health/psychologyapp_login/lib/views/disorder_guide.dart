@@ -106,7 +106,7 @@ class DisorderGuide extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF065643).withOpacity(0.2),
+                          color: const Color(0xFF065643).withValues(alpha: 0.2),
                           blurRadius: 20,
                           offset: const Offset(0, 10),
                         ),
@@ -181,9 +181,9 @@ class DisorderGuide extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF065643).withOpacity(0.05),
+        color: const Color(0xFF065643).withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFF065643).withOpacity(0.05)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,7 +191,7 @@ class DisorderGuide extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFF065643).withOpacity(0.1),
+              color: const Color(0xFF065643).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: const Color(0xFF065643), size: 24),

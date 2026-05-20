@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/controllers/signup_loginfunctionality.dart';
 import 'package:psychologyapp_login/views/clientforgotpassword.dart';
 import 'package:psychologyapp_login/views/clientnavigationbar.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/controllers/user_controller.dart';
 
 class ClientLogin extends StatefulWidget {
   const ClientLogin({super.key});
@@ -52,11 +52,11 @@ class _ClientLoginState extends State<ClientLogin> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.1),
+                        color: const Color(0xFF065643).withValues(alpha: 0.08),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withOpacity(0.1)),
+                        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
                       ),
-                      child: const Icon(Icons.spa_rounded, size: 60, color: Colors.white),
+                      child: const Icon(Icons.spa_rounded, size: 60, color: Color(0xFF065643)),
                     ),
                     
                     const SizedBox(height: 40),
@@ -66,7 +66,7 @@ class _ClientLoginState extends State<ClientLogin> {
                       style: GoogleFonts.outfit(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: const Color(0xFF065643),
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -80,7 +80,7 @@ class _ClientLoginState extends State<ClientLogin> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.outfit(
                         fontSize: 16,
-                        color: Colors.white.withOpacity(0.7),
+                        color: Colors.grey[600],
                       ),
                     ),
                     
@@ -112,8 +112,11 @@ class _ClientLoginState extends State<ClientLogin> {
                       isPassword: true,
                       isPasswordVisible: _isLoginMode ? _isPasswordVisible : _isSignupPasswordVisible,
                       onPasswordToggle: () => setState(() {
-                        if (_isLoginMode) _isPasswordVisible = !_isPasswordVisible;
-                        else _isSignupPasswordVisible = !_isSignupPasswordVisible;
+                        if (_isLoginMode) {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        } else {
+                          _isSignupPasswordVisible = !_isSignupPasswordVisible;
+                        }
                       }),
                       validator: (v) => v!.length < 6 ? "Min 6 characters" : null,
                     ),
@@ -125,7 +128,7 @@ class _ClientLoginState extends State<ClientLogin> {
                           onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClientForgotPassword())),
                           child: Text(
                             "Forgot Password?",
-                            style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.6), fontSize: 14),
+                            style: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.8), fontSize: 14, fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
@@ -141,14 +144,14 @@ class _ClientLoginState extends State<ClientLogin> {
                       children: [
                         Text(
                           _isLoginMode ? "Don't have an account? " : "Already have an account? ",
-                          style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.6)),
+                          style: GoogleFonts.outfit(color: Colors.grey[600]),
                         ),
                         GestureDetector(
                           onTap: _toggleMode,
                           child: Text(
                             _isLoginMode ? "Sign Up" : "Login",
                             style: GoogleFonts.outfit(
-                              color: Colors.white,
+                              color: const Color(0xFF065643),
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
@@ -179,9 +182,12 @@ class _ClientLoginState extends State<ClientLogin> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5)),
+        ],
       ),
       child: TextFormField(
         controller: controller,
@@ -190,12 +196,12 @@ class _ClientLoginState extends State<ClientLogin> {
         style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w600),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withOpacity(0.4)),
-          prefixIcon: Icon(icon, color: const Color(0xFF065643).withOpacity(0.6)),
+          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4)),
+          prefixIcon: Icon(icon, color: const Color(0xFF065643).withValues(alpha: 0.6)),
           suffixIcon: isPassword ? IconButton(
             icon: Icon(
               isPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-              color: const Color(0xFF065643).withOpacity(0.4),
+              color: const Color(0xFF065643).withValues(alpha: 0.4),
             ),
             onPressed: onPasswordToggle,
           ) : null,
@@ -220,9 +226,14 @@ class _ClientLoginState extends State<ClientLogin> {
               Navigator.pop(context); // Close loading
               
               if (result == 'Login successful' || result == 'success') {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => ClientNavigationBar(email: emailController.text)));
+                UserController.updateEmail(emailController.text);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => ClientNavigationBar(email: emailController.text)),
+                  (route) => false,
+                );
               } else {
-                _showErrorSnackBar(result ?? "Login failed");
+                _showErrorSnackBar(result);
               }
             } else {
               final result = await signupFunctionality.signUpUser(
@@ -232,23 +243,27 @@ class _ClientLoginState extends State<ClientLogin> {
               Navigator.pop(context); // Close loading
               
               if (result == 'success') {
+                UserController.updateEmail(
+                  signupEmailController.text,
+                  fullName: signupNameController.text.trim().isNotEmpty ? signupNameController.text : null,
+                );
                 _showSuccessSnackBar("Account created! Please login.");
                 setState(() => _isLoginMode = true);
               } else {
-                _showErrorSnackBar(result ?? "Signup failed");
+                _showErrorSnackBar(result);
               }
             }
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
-          foregroundColor: const Color(0xFF065643),
+          backgroundColor: const Color(0xFF065643),
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           elevation: 0,
         ),
         child: Text(
           _isLoginMode ? "Login" : "Sign Up",
-          style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold),
+          style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );

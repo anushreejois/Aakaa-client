@@ -70,9 +70,9 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
                           Container(
                             padding: const EdgeInsets.all(24),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha: 0.1),
                               shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white.withOpacity(0.1)),
+                              border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                             ),
                             child: const Icon(Icons.mark_email_read_outlined, color: Colors.white, size: 60),
                           ),
@@ -90,7 +90,7 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
                           Text(
                             "Enter the code sent to",
                             style: GoogleFonts.outfit(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 16,
                             ),
                           ),
@@ -122,7 +122,7 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
                           Text(
                             "Didn't receive the code?",
                             style: GoogleFonts.outfit(
-                              color: Colors.white.withOpacity(0.8),
+                              color: Colors.white.withValues(alpha: 0.8),
                               fontSize: 16,
                             ),
                           ),
@@ -194,9 +194,9 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
       width: 70,
       height: 70,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.08),
+        color: Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Center(
         child: TextField(
@@ -209,7 +209,7 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: "-",
-            hintStyle: TextStyle(color: const Color(0xFF065643).withOpacity(0.3), fontSize: 24),
+            hintStyle: TextStyle(color: const Color(0xFF065643).withValues(alpha: 0.3), fontSize: 24),
           ),
           style: GoogleFonts.outfit(
             color: const Color(0xFF065643),

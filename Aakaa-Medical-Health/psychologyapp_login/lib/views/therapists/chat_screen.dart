@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../widgets/zen_background.dart';
 
 class ChatScreen extends StatefulWidget {
   final String therapistName;
@@ -63,55 +64,55 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: ZenBackground(
+        child: Column(
+          children: [
+            // Premium Daylight AppBar
+            _buildAppBar(),
+            
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                physics: const BouncingScrollPhysics(),
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  return _buildMessageBubble(_messages[index]);
+                },
               ),
             ),
-          ),
-          
-          Column(
-            children: [
-              // Custom Premium AppBar
-              _buildAppBar(),
-              
-              Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: _messages.length,
-                  itemBuilder: (context, index) {
-                    return _buildMessageBubble(_messages[index]);
-                  },
-                ),
-              ),
-              
-              _buildInputArea(),
-            ],
-          ),
-        ],
+            
+            _buildInputArea(),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAppBar() {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, bottom: 20, left: 16, right: 16),
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).padding.top + 10, 
+        bottom: 20, 
+        left: 16, 
+        right: 16
+      ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: const Color(0xFF065643).withValues(alpha: 0.08))),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643), size: 20),
             onPressed: () => Navigator.pop(context),
           ),
           const SizedBox(width: 4),
@@ -123,7 +124,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 height: 45,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withOpacity(0.2), width: 2),
+                  border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1), width: 2),
                   image: const DecorationImage(
                     image: NetworkImage("https://images.unsplash.com/photo-1559839734-2b71f153678e?w=400&h=400&fit=crop"),
                     fit: BoxFit.cover,
@@ -136,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 decoration: BoxDecoration(
                   color: Colors.greenAccent,
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF065643), width: 2),
+                  border: Border.all(color: Colors.white, width: 2),
                 ),
               ),
             ],
@@ -149,7 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Text(
                   widget.therapistName,
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -157,7 +158,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Text(
                   'Always here to help',
                   style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.grey[500],
                     fontSize: 12,
                   ),
                 ),
@@ -165,11 +166,11 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.videocam_outlined, color: Colors.white.withOpacity(0.7)),
+            icon: Icon(Icons.videocam_outlined, color: const Color(0xFF065643).withValues(alpha: 0.8)),
             onPressed: () {},
           ),
           IconButton(
-            icon: Icon(Icons.info_outline_rounded, color: Colors.white.withOpacity(0.7)),
+            icon: Icon(Icons.info_outline_rounded, color: const Color(0xFF065643).withValues(alpha: 0.8)),
             onPressed: () {},
           ),
         ],
@@ -190,8 +191,8 @@ class _ChatScreenState extends State<ChatScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: BoxDecoration(
                 color: message.isMe 
-                    ? Colors.white.withOpacity(0.15) 
-                    : const Color(0xFF065643).withOpacity(0.4),
+                    ? const Color(0xFF065643)
+                    : Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(24),
                   topRight: const Radius.circular(24),
@@ -200,14 +201,21 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 border: Border.all(
                   color: message.isMe 
-                      ? Colors.white.withOpacity(0.1) 
-                      : Colors.white.withOpacity(0.05),
+                      ? Colors.transparent 
+                      : const Color(0xFF065643).withValues(alpha: 0.08),
                 ),
+                boxShadow: message.isMe ? [] : [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.02),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: Text(
                 message.text,
                 style: GoogleFonts.outfit(
-                  color: Colors.white,
+                  color: message.isMe ? Colors.white : const Color(0xFF065643),
                   fontSize: 15,
                   height: 1.5,
                 ),
@@ -218,7 +226,7 @@ class _ChatScreenState extends State<ChatScreen> {
               message.time,
               style: GoogleFonts.outfit(
                 fontSize: 10,
-                color: Colors.white.withOpacity(0.3),
+                color: message.isMe ? Colors.grey[500] : Colors.grey[400],
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -237,14 +245,15 @@ class _ChatScreenState extends State<ChatScreen> {
         top: 20,
       ),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            const Color(0xFF065643),
-            const Color(0xFF065643).withOpacity(0),
-          ],
-        ),
+        color: Colors.white,
+        border: Border(top: BorderSide(color: const Color(0xFF065643).withValues(alpha: 0.08))),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 15,
+            offset: const Offset(0, -5),
+          ),
+        ],
       ),
       child: Row(
         children: [
@@ -252,9 +261,9 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               height: 60,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
+                color: const Color(0xFF065643).withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
               ),
               child: Row(
                 children: [
@@ -262,18 +271,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   Expanded(
                     child: TextField(
                       controller: _controller,
-                      cursorColor: Colors.white,
-                      style: GoogleFonts.outfit(color: Colors.white, fontSize: 16),
+                      cursorColor: const Color(0xFF065643),
+                      style: GoogleFonts.outfit(color: const Color(0xFF065643), fontSize: 16),
                       decoration: InputDecoration(
                         hintText: "Type a message...",
-                        hintStyle: GoogleFonts.outfit(color: Colors.white.withOpacity(0.3)),
+                        hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4)),
                         border: InputBorder.none,
                       ),
                       onSubmitted: (_) => _sendMessage(),
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.add_circle_outline_rounded, color: Colors.white.withOpacity(0.5)),
+                    icon: Icon(Icons.add_circle_outline_rounded, color: const Color(0xFF065643).withValues(alpha: 0.6)),
                     onPressed: () {},
                   ),
                 ],
@@ -286,18 +295,22 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               width: 60,
               height: 60,
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFF065643), Color(0xFF0A7D62)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: const Color(0xFF065643).withValues(alpha: 0.25),
                     blurRadius: 10,
-                    offset: Offset(0, 4),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
-              child: const Icon(Icons.send_rounded, color: Color(0xFF065643), size: 24),
+              child: const Icon(Icons.send_rounded, color: Colors.white, size: 24),
             ),
           ),
         ],

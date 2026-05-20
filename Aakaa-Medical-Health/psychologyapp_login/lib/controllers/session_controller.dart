@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import '../models/session_model.dart';
 import '../models/consultation_type.dart';
+import 'notification_controller.dart';
 
 class SessionController {
-  static final List<TherapySession> upcomingSessions = [
+  static final ValueNotifier<List<TherapySession>> upcomingSessionsNotifier = ValueNotifier([
     TherapySession(
       id: "s1",
       therapistName: "Dr. Sarah Johnson",
@@ -19,9 +21,9 @@ class SessionController {
       endTime: DateTime.now().add(const Duration(days: 5, hours: 1, minutes: 30)),
       consultationType: ConsultationType.message,
     ),
-  ];
+  ]);
 
-  static final List<TherapySession> pastSessions = [
+  static final ValueNotifier<List<TherapySession>> pastSessionsNotifier = ValueNotifier([
     TherapySession(
       id: "p1",
       therapistName: "Dr. Emily White",
@@ -30,5 +32,21 @@ class SessionController {
       endTime: DateTime.now().subtract(const Duration(days: 10, minutes: 45)),
       consultationType: ConsultationType.video,
     ),
-  ];
+  ]);
+
+  static List<TherapySession> get upcomingSessions => upcomingSessionsNotifier.value;
+  static List<TherapySession> get pastSessions => pastSessionsNotifier.value;
+
+  static void addNewSession(TherapySession session) {
+    final updated = List<TherapySession>.from(upcomingSessionsNotifier.value);
+    updated.insert(0, session);
+    upcomingSessionsNotifier.value = updated;
+
+    NotificationController.addNotification(
+      title: "Session Confirmed",
+      body: "Your ${session.consultationType.name} consultation with ${session.therapistName} has been booked successfully.",
+      iconType: "session",
+    );
+  }
 }
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
+import '../widgets/zen_background.dart';
 
 class MindfulnessTimer extends StatefulWidget {
   const MindfulnessTimer({super.key});
@@ -80,7 +81,7 @@ class _MindfulnessTimerState extends State<MindfulnessTimer> with SingleTickerPr
         backgroundColor: const Color(0xFFFFF7F5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
         title: Text("Well Done", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, color: const Color(0xFF065643))),
-        content: Text("You've completed your mindfulness session. How do you feel?", style: GoogleFonts.outfit()),
+        content: Text("You've completed your mindfulness session. How do you feel?", style: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.8))),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -107,125 +108,118 @@ class _MindfulnessTimerState extends State<MindfulnessTimer> with SingleTickerPr
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF065643),
-      body: Stack(
-        children: [
-          // Subtle Ambient Background
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: RadialGradient(
-                  center: Alignment.center,
-                  radius: 1.2,
-                  colors: [
-                    Color(0xFF0A7D62),
-                    Color(0xFF065643),
-                  ],
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: ZenBackground(
+        child: Stack(
+          children: [
+            // Back Button
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: IconButton(
+                  icon: const Icon(Icons.close_rounded, color: Color(0xFF065643), size: 30),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
             ),
-          ),
-          
-          // Back Button
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 30),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-          ),
 
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Animated Breathing Circle
-                AnimatedBuilder(
-                  animation: _scaleAnimation,
-                  builder: (context, child) {
-                    return Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        // Outer Glow
-                        Container(
-                          width: 200 * _scaleAnimation.value,
-                          height: 200 * _scaleAnimation.value,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(0.05),
-                          ),
-                        ),
-                        // Inner Circle
-                        Container(
-                          width: 150 * _scaleAnimation.value,
-                          height: 150 * _scaleAnimation.value,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white.withOpacity(0.15),
-                                Colors.white.withOpacity(0.05),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Animated Breathing Circle
+                  AnimatedBuilder(
+                    animation: _scaleAnimation,
+                    builder: (context, child) {
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          // Outer Glow
+                          Container(
+                            width: 200 * _scaleAnimation.value,
+                            height: 200 * _scaleAnimation.value,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: const Color(0xFF065643).withValues(alpha: 0.04),
                             ),
-                            border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
                           ),
-                          child: const Icon(Icons.spa_rounded, color: Colors.white38, size: 40),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                
-                const SizedBox(height: 60),
-                
-                Text(
-                  _breathText,
-                  style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.9),
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 1.2,
+                          // Inner Circle
+                          Container(
+                            width: 150 * _scaleAnimation.value,
+                            height: 150 * _scaleAnimation.value,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF065643).withValues(alpha: 0.08),
+                                  blurRadius: 30,
+                                  offset: const Offset(0, 10),
+                                ),
+                              ],
+                              border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
+                            ),
+                            child: Icon(Icons.spa_rounded, color: const Color(0xFF065643).withValues(alpha: 0.3), size: 40),
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ),
-                
-                const SizedBox(height: 20),
-                
-                Text(
-                  _formatTime(_secondsRemaining),
-                  style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 48,
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-                
-                const SizedBox(height: 80),
-                
-                // Play/Pause Button
-                GestureDetector(
-                  onTap: _toggleTimer,
-                  child: Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
-                    ),
-                    child: Icon(
-                      _isStarted ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                      color: Colors.white,
-                      size: 40,
+                  
+                  const SizedBox(height: 60),
+                  
+                  Text(
+                    _breathText,
+                    style: GoogleFonts.outfit(
+                      color: const Color(0xFF065643),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.2,
                     ),
                   ),
-                ),
-              ],
+                  
+                  const SizedBox(height: 20),
+                  
+                  Text(
+                    _formatTime(_secondsRemaining),
+                    style: GoogleFonts.outfit(
+                      color: const Color(0xFF065643).withValues(alpha: 0.6),
+                      fontSize: 48,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 80),
+                  
+                  // Play/Pause Button
+                  GestureDetector(
+                    onTap: _toggleTimer,
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF065643).withValues(alpha: 0.1),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
+                      ),
+                      child: Icon(
+                        _isStarted ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                        color: const Color(0xFF065643),
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

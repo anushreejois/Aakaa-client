@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/info.dart';
@@ -64,7 +63,7 @@ class _GetStartedState extends State<GetStarted> with SingleTickerProviderStateM
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: const Color(0xFF065643).withOpacity(0.03),
+                color: const Color(0xFF065643).withValues(alpha: 0.03),
               ),
             ),
           ),
@@ -86,7 +85,7 @@ class _GetStartedState extends State<GetStarted> with SingleTickerProviderStateM
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF065643).withOpacity(0.1),
+                            color: const Color(0xFF065643).withValues(alpha: 0.1),
                             blurRadius: 40,
                             offset: const Offset(0, 20),
                           ),
@@ -131,7 +130,7 @@ class _GetStartedState extends State<GetStarted> with SingleTickerProviderStateM
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF065643).withOpacity(0.3),
+                            color: const Color(0xFF065643).withValues(alpha: 0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),

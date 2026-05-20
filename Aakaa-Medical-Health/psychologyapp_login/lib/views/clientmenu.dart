@@ -8,6 +8,7 @@ import 'package:psychologyapp_login/views/message_hub.dart';
 import 'package:psychologyapp_login/controllers/plan_controller.dart';
 import 'package:psychologyapp_login/views/premium_gate_dialog.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/controllers/user_controller.dart';
 
 class ClientMenu extends StatefulWidget {
   final String email;
@@ -49,35 +50,40 @@ class _ClientMenuState extends State<ClientMenu>{
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 centerTitle: false,
-                title: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Welcome,",
-                      style: GoogleFonts.outfit(
-                        color: Colors.white.withOpacity(0.5),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      result,
-                      style: GoogleFonts.outfit(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
-                    ),
-                  ],
+                title: ValueListenableBuilder<UserModel>(
+                  valueListenable: UserController.userNotifier,
+                  builder: (context, user, child) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Welcome,",
+                          style: GoogleFonts.outfit(
+                            color: const Color(0xFF065643).withValues(alpha: 0.6),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          user.firstName.isNotEmpty ? user.firstName : result,
+                          style: GoogleFonts.outfit(
+                            color: const Color(0xFF065643),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               actions: [
                 Padding(
                   padding: const EdgeInsets.only(right: 16.0),
                   child: IconButton(
-                    icon: Icon(Icons.notifications_none_rounded, color: Colors.white.withOpacity(0.8), size: 28),
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ClientNotification())),
+                    icon: const Icon(Icons.notifications_none_rounded, color: Color(0xFF065643), size: 28),
+                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ClientNotification())),
                   ),
                 ),
               ],
@@ -97,7 +103,7 @@ class _ClientMenuState extends State<ClientMenu>{
                       style: GoogleFonts.outfit(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.9),
+                        color: const Color(0xFF065643),
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -106,7 +112,7 @@ class _ClientMenuState extends State<ClientMenu>{
                     const SizedBox(height: 12),
                     _buildMenuTile(Icons.psychology_outlined, "Disorders", "Educational resources", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const DisordersLibrary()))),
                     const SizedBox(height: 12),
-                    _buildMenuTile(Icons.person_search_outlined, "Find Therapist", "Book your next session", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => FindTherapist()))),
+                    _buildMenuTile(Icons.person_search_outlined, "Find Therapist", "Book your next session", onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindTherapist()))),
                     const SizedBox(height: 12),
                     _buildMenuTile(
                       Icons.chat_bubble_outline_rounded, 
@@ -130,8 +136,15 @@ class _ClientMenuState extends State<ClientMenu>{
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        color: Colors.white.withOpacity(0.06), // Very subtle glass
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(28.0),
@@ -141,13 +154,13 @@ class _ClientMenuState extends State<ClientMenu>{
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: const Color(0xFF065643).withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
                 "NEW FEATURE",
                 style: GoogleFonts.outfit(
-                  color: Colors.white.withOpacity(0.7),
+                  color: const Color(0xFF065643),
                   fontSize: 10,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1,
@@ -158,7 +171,7 @@ class _ClientMenuState extends State<ClientMenu>{
             Text(
               "Mental Healthcare",
               style: GoogleFonts.outfit(
-                color: Colors.white,
+                color: const Color(0xFF065643),
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 height: 1.1,
@@ -168,7 +181,7 @@ class _ClientMenuState extends State<ClientMenu>{
             Text(
               "Book your next online appointments seamlessly",
               style: GoogleFonts.outfit(
-                color: Colors.white.withOpacity(0.5),
+                color: Colors.grey[600],
                 fontSize: 15,
                 height: 1.4,
               ),
@@ -182,9 +195,16 @@ class _ClientMenuState extends State<ClientMenu>{
   Widget _buildMenuTile(IconData icon, String title, String subtitle, {VoidCallback? onTap}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.04), // Ultra subtle glass
+        color: Colors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.06)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.02),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: ListTile(
         onTap: onTap,
@@ -192,27 +212,27 @@ class _ClientMenuState extends State<ClientMenu>{
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.05),
+            color: const Color(0xFF065643).withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(16),
           ),
-          child: Icon(icon, color: Colors.white.withOpacity(0.8), size: 24),
+          child: Icon(icon, color: const Color(0xFF065643), size: 24),
         ),
         title: Text(
           title,
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w600,
-            color: Colors.white,
+            color: const Color(0xFF065643),
             fontSize: 16,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: GoogleFonts.outfit(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.grey[600],
             fontSize: 13,
           ),
         ),
-        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.white.withOpacity(0.2)),
+        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 14, color: Colors.grey[400]),
       ),
     );
   }

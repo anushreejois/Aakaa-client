@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/zen_background.dart';
+import '../controllers/user_controller.dart';
 
 class EditProfile extends StatefulWidget {
   final String? currentAvatar;
@@ -31,113 +33,119 @@ class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
     super.initState();
+    final user = UserController.currentUser;
+    _firstNameController.text = user.firstName;
+    _lastNameController.text = user.lastName;
+    _selectedAvatar = user.avatarUrl;
     if (widget.currentAvatar != null && widget.currentAvatar!.startsWith("http")) {
       _selectedAvatar = widget.currentAvatar!;
+    }
+    if (user.gender.toLowerCase() == "male") {
+      _selectedGender = Gender.male;
+    } else if (user.gender.toLowerCase() == "female") {
+      _selectedGender = Gender.female;
+    } else {
+      _selectedGender = Gender.other;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Premium Deep Green Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: ZenBackground(
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 140.0,
+              floating: false,
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
+                onPressed: () => Navigator.pop(context, _selectedAvatar),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                centerTitle: false,
+                title: Text(
+                  "Edit Profile",
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF065643),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
               ),
             ),
-          ),
-          
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 140.0,
-                floating: false,
-                pinned: true,
-                elevation: 0,
-                backgroundColor: Colors.transparent,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                  onPressed: () => Navigator.pop(context, _selectedAvatar),
-                ),
-                flexibleSpace: FlexibleSpaceBar(
-                  titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                  centerTitle: false,
-                  title: Text(
-                    "Edit Profile",
-                    style: GoogleFonts.outfit(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                    ),
-                  ),
-                ),
-              ),
 
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Form(
-                    key: _editProfileFormKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 32),
-                        
-                        // Selected Avatar Preview
-                        Center(child: _buildAvatarPreview()),
-                        
-                        const SizedBox(height: 48),
-                        
-                        _buildSectionLabel("Choose your Identity"),
-                        const SizedBox(height: 16),
-                        
-                        _buildAvatarGrid(),
-                        
-                        const SizedBox(height: 40),
-                        
-                        _buildSectionLabel("Personal Information"),
-                        const SizedBox(height: 16),
-                        _buildTextField("First Name", _firstNameController, Icons.person_outline_rounded),
-                        const SizedBox(height: 16),
-                        _buildTextField("Last Name", _lastNameController, Icons.person_outline_rounded),
-                        
-                        const SizedBox(height: 32),
-                        
-                        _buildSectionLabel("Gender"),
-                        const SizedBox(height: 12),
-                        _buildGenderSelector(),
-                        
-                        const SizedBox(height: 48),
-                        
-                        _buildUpdateButton(),
-                        
-                        const SizedBox(height: 100),
-                      ],
-                    ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Form(
+                  key: _editProfileFormKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 32),
+                      
+                      // Selected Avatar Preview
+                      Center(child: _buildAvatarPreview()),
+                      
+                      const SizedBox(height: 48),
+                      
+                      _buildSectionLabel("Choose your Identity"),
+                      const SizedBox(height: 16),
+                      
+                      _buildAvatarGrid(),
+                      
+                      const SizedBox(height: 40),
+                      
+                      _buildSectionLabel("Personal Information"),
+                      const SizedBox(height: 16),
+                      _buildTextField("First Name", _firstNameController, Icons.person_outline_rounded),
+                      const SizedBox(height: 16),
+                      _buildTextField("Last Name", _lastNameController, Icons.person_outline_rounded),
+                      
+                      const SizedBox(height: 32),
+                      
+                      _buildSectionLabel("Gender"),
+                      const SizedBox(height: 16),
+                      _buildGenderSelector(),
+                      
+                      const SizedBox(height: 56),
+                      
+                      _buildUpdateButton(),
+                      
+                      const SizedBox(height: 100),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildAvatarPreview() {
     return Container(
-      width: 140,
-      height: 140,
+      width: 150,
+      height: 150,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 3),
+        border: Border.all(color: const Color(0xFF065643), width: 4),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF065643).withValues(alpha: 0.15),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
+          ),
+        ],
         image: DecorationImage(
           image: NetworkImage(_selectedAvatar),
           fit: BoxFit.cover,
@@ -147,7 +155,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Widget _buildAvatarGrid() {
-    return Container(
+    return SizedBox(
       height: 90,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -158,16 +166,23 @@ class _EditProfileState extends State<EditProfile> {
           return GestureDetector(
             onTap: () => setState(() => _selectedAvatar = _avatars[index]),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(right: 12),
-              width: 75,
-              height: 75,
+              duration: const Duration(milliseconds: 250),
+              margin: const EdgeInsets.only(right: 16, top: 4, bottom: 4),
+              width: 78,
+              height: 78,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isSelected ? Colors.white : Colors.white.withOpacity(0.1),
-                  width: 3,
+                  color: isSelected ? const Color(0xFF065643) : const Color(0xFF065643).withValues(alpha: 0.1),
+                  width: isSelected ? 4 : 2,
                 ),
+                boxShadow: isSelected ? [
+                  BoxShadow(
+                    color: const Color(0xFF065643).withValues(alpha: 0.25),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ] : null,
                 image: DecorationImage(
                   image: NetworkImage(_avatars[index]),
                   fit: BoxFit.cover,
@@ -184,9 +199,9 @@ class _EditProfileState extends State<EditProfile> {
     return Text(
       label.toUpperCase(),
       style: GoogleFonts.outfit(
-        fontSize: 12,
+        fontSize: 13,
         fontWeight: FontWeight.bold,
-        color: Colors.white.withOpacity(0.4),
+        color: const Color(0xFF065643).withValues(alpha: 0.6),
         letterSpacing: 1.5,
       ),
     );
@@ -196,26 +211,33 @@ class _EditProfileState extends State<EditProfile> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF065643).withValues(alpha: 0.06),
+            blurRadius: 15,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
       child: Theme(
         data: Theme.of(context).copyWith(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.white, background: Colors.transparent),
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF065643), surface: Colors.transparent),
         ),
         child: TextFormField(
           controller: controller,
-          cursorColor: Colors.white,
+          cursorColor: const Color(0xFF065643),
           style: GoogleFonts.outfit(
             fontWeight: FontWeight.w500, 
-            color: Colors.white,
+            color: const Color(0xFF065643),
             fontSize: 16,
           ),
           decoration: InputDecoration(
             hintText: label,
-            hintStyle: GoogleFonts.outfit(color: Colors.white.withOpacity(0.3)),
-            prefixIcon: Icon(icon, color: Colors.white.withOpacity(0.4), size: 20),
+            hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4)),
+            prefixIcon: Icon(icon, color: const Color(0xFF065643).withValues(alpha: 0.6), size: 22),
             border: InputBorder.none,
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
@@ -232,9 +254,11 @@ class _EditProfileState extends State<EditProfile> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildGenderChip(Gender.male, "Male"),
-        _buildGenderChip(Gender.female, "Female"),
-        _buildGenderChip(Gender.other, "Other"),
+        Expanded(child: _buildGenderChip(Gender.male, "Male")),
+        const SizedBox(width: 12),
+        Expanded(child: _buildGenderChip(Gender.female, "Female")),
+        const SizedBox(width: 12),
+        Expanded(child: _buildGenderChip(Gender.other, "Other")),
       ],
     );
   }
@@ -244,18 +268,34 @@ class _EditProfileState extends State<EditProfile> {
     return GestureDetector(
       onTap: () => setState(() => _selectedGender = gender),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        duration: const Duration(milliseconds: 250),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.08),
+          gradient: isSelected
+            ? const LinearGradient(
+                colors: [Color(0xFF065643), Color(0xFF0A7D62)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+          color: isSelected ? null : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: isSelected ? Colors.transparent : const Color(0xFF065643).withValues(alpha: 0.1)),
+          boxShadow: [
+            BoxShadow(
+              color: isSelected ? const Color(0xFF065643).withValues(alpha: 0.25) : const Color(0xFF065643).withValues(alpha: 0.04),
+              blurRadius: 15,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
+        alignment: Alignment.center,
         child: Text(
           label,
           style: GoogleFonts.outfit(
-            color: isSelected ? const Color(0xFF065643) : Colors.white,
+            color: isSelected ? Colors.white : const Color(0xFF065643).withValues(alpha: 0.8),
             fontWeight: FontWeight.bold,
+            fontSize: 15,
           ),
         ),
       ),
@@ -264,16 +304,35 @@ class _EditProfileState extends State<EditProfile> {
 
   Widget _buildUpdateButton() {
     return GestureDetector(
-      onTap: () => Navigator.pop(context, _selectedAvatar),
+      onTap: () {
+        String genderStr = "Female";
+        if (_selectedGender == Gender.male) {
+          genderStr = "Male";
+        } else if (_selectedGender == Gender.other) {
+          genderStr = "Other";
+        }
+
+        UserController.updateProfile(
+          firstName: _firstNameController.text.trim(),
+          lastName: _lastNameController.text.trim(),
+          avatarUrl: _selectedAvatar,
+          gender: genderStr,
+        );
+        Navigator.pop(context, _selectedAvatar);
+      },
       child: Container(
         width: double.infinity,
         height: 65,
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: const LinearGradient(
+            colors: [Color(0xFF065643), Color(0xFF0A7D62)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: const Color(0xFF065643).withValues(alpha: 0.25),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -283,7 +342,7 @@ class _EditProfileState extends State<EditProfile> {
         child: Text(
           "SAVE CHANGES",
           style: GoogleFonts.outfit(
-            color: const Color(0xFF065643),
+            color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
             letterSpacing: 1.2,

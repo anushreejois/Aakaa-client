@@ -23,8 +23,8 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
     super.initState();
     _screens = [
       ClientMenu(email: widget.email),
-      ClientActivity(),
-      ClientPlan(),
+      const ClientActivity(),
+      const ClientPlan(),
       ClientProfile(email: widget.email, onNavigateToTab: navigateToTab),
     ];
   }
@@ -56,7 +56,7 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF065643).withOpacity(0.12),
+              color: const Color(0xFF065643).withValues(alpha: 0.12),
               blurRadius: 30,
               offset: const Offset(0, 10),
             ),
@@ -67,7 +67,7 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: const Color(0xFF065643).withOpacity(0.9),
+              color: const Color(0xFF065643).withValues(alpha: 0.9),
               child: Theme(
                 data: Theme.of(context).copyWith(
                   splashColor: Colors.transparent,
@@ -80,7 +80,7 @@ class _ClientNavigationBarState extends State<ClientNavigationBar>{
                   currentIndex: selectedindex,
                   onTap: onItemTapped,
                   selectedItemColor: const Color(0xFFFFF7F5),
-                  unselectedItemColor: const Color(0xFFFFF7F5).withOpacity(0.4),
+                  unselectedItemColor: const Color(0xFFFFF7F5).withValues(alpha: 0.4),
                   showSelectedLabels: true,
                   showUnselectedLabels: false,
                   selectedFontSize: 12,

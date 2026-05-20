@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/views/therapists/chat_screen.dart';
-import 'dart:ui';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class MessageHub extends StatefulWidget {
@@ -56,7 +55,7 @@ class _MessageHubState extends State<MessageHub> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
                 onPressed: () => Navigator.pop(context),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -65,7 +64,7 @@ class _MessageHubState extends State<MessageHub> {
                 title: Text(
                   "Messages",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
@@ -106,16 +105,17 @@ class _MessageHubState extends State<MessageHub> {
     return Container(
       height: 56,
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: TextField(
         style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w600),
         cursorColor: const Color(0xFF065643),
         decoration: InputDecoration(
           hintText: "Search conversations...",
-          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withOpacity(0.4), fontSize: 15),
+          hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4), fontSize: 15),
           prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF065643), size: 22),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18),
@@ -128,99 +128,97 @@ class _MessageHubState extends State<MessageHub> {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 15, offset: const Offset(0, 5))],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: ListTile(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(therapistName: convo['name']))),
-            contentPadding: const EdgeInsets.all(16),
-            leading: Stack(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundImage: NetworkImage(convo['avatar']),
-                ),
-                if (convo['isOnline'])
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.greenAccent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFF065643), width: 2),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            title: Text(
-              convo['name'],
-              style: GoogleFonts.outfit(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+        child: ListTile(
+          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(therapistName: convo['name']))),
+          contentPadding: const EdgeInsets.all(16),
+          leading: Stack(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(convo['avatar']),
               ),
-            ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  convo['specialty'],
-                  style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  convo['lastMessage'],
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-            trailing: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  convo['time'],
-                  style: GoogleFonts.outfit(
-                    color: Colors.white.withOpacity(0.4),
-                    fontSize: 12,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                if (convo['unreadCount'] > 0)
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              if (convo['isOnline'])
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 16,
+                    height: 16,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      convo['unreadCount'].toString(),
-                      style: GoogleFonts.outfit(
-                        color: const Color(0xFF065643),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 12,
-                      ),
+                      color: Colors.greenAccent,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
                     ),
                   ),
-              ],
+                ),
+            ],
+          ),
+          title: Text(
+            convo['name'],
+            style: GoogleFonts.outfit(
+              color: const Color(0xFF065643),
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                convo['specialty'],
+                style: GoogleFonts.outfit(
+                  color: Colors.grey[500],
+                  fontSize: 13,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                convo['lastMessage'],
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.outfit(
+                  color: Colors.grey[700],
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                convo['time'],
+                style: GoogleFonts.outfit(
+                  color: Colors.grey[400],
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (convo['unreadCount'] > 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF065643),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    convo['unreadCount'].toString(),
+                    style: GoogleFonts.outfit(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),

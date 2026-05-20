@@ -25,7 +25,7 @@ class OTPGeneration {
 
     final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
 
-    final response = await http.post(
+    await http.post(
       url,
       headers: {
         "origin": "http://localhost",

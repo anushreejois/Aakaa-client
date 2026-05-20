@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
+import 'package:psychologyapp_login/controllers/plan_controller.dart';
 
 class ClientSubscription extends StatefulWidget {
   const ClientSubscription({super.key});
@@ -10,7 +11,13 @@ class ClientSubscription extends StatefulWidget {
 }
 
 class _ClientSubscriptionState extends State<ClientSubscription> {
-  int _selectedPlanIndex = 2; // Default to Premium
+  late int _selectedPlanIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPlanIndex = PlanController.currentPlanIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +33,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
               elevation: 0,
               backgroundColor: Colors.transparent,
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
                 onPressed: () => Navigator.pop(context),
               ),
               flexibleSpace: FlexibleSpaceBar(
@@ -35,7 +42,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                 title: Text(
                   "Subscription",
                   style: GoogleFonts.outfit(
-                    color: Colors.white,
+                    color: const Color(0xFF065643),
                     fontWeight: FontWeight.bold,
                     fontSize: 24,
                   ),
@@ -54,38 +61,38 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                       "Choose the plan that's right for you",
                       style: GoogleFonts.outfit(
                         fontSize: 16,
-                        color: Colors.white.withOpacity(0.5),
+                        color: Colors.grey[600],
                       ),
                     ),
                     const SizedBox(height: 32),
                     
-                    _buildPlanCard(0, "Freemium", "🧪", "The essentials", "Free", [
+                    _buildPlanCard(0, "Freemium", "🧪", "The daily habit", "Free", [
                       "Basic profile setup",
-                      "3-day mood tracking",
-                      "Explore therapists",
+                      "Daily affirmations & breathing",
+                      "7-day mood history",
+                      "Explore therapist directory",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(1, "Basic", "🎯", "For starters", "₹499/mo", [
-                      "Mood tracking + journal",
-                      "5+ self-help tools",
-                      "Limited therapist chat",
-                      "Appointment access",
+                    _buildPlanCard(1, "Basic", "🎯", "Self-help mastery", "₹399/mo", [
+                      "Unlimited mood & sleep analytics",
+                      "Full audio sleep sanctuaries",
+                      "5 AI journal analyses / mo",
+                      "Priority support access",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(2, "Premium", "💎", "Best value", "₹999/mo", [
-                      "Unlimited therapist chat",
-                      "Full self-help library",
-                      "AI mood insights",
-                      "Session notes download",
-                      "Priority booking",
+                    _buildPlanCard(2, "Standard", "⭐", "Guided care", "₹899/mo", [
+                      "Unlimited AI clinical coach",
+                      "Direct doctor text messaging",
+                      "Monthly psychological PDF reports",
+                      "10% off live video sessions",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(3, "Platinum", "👑", "VIP care", "₹1999/mo", [
-                      "Emergency support line",
-                      "Dedicated therapist match",
-                      "AI coach & habits",
-                      "Weekly PDF reports",
-                      "Personalized wellness plan",
+                    _buildPlanCard(3, "Premium", "💎", "Complete VIP care", "₹1799/mo", [
+                      "Dedicated matched therapist",
+                      "Priority 3h doctor response",
+                      "Weekly certified clinical reports",
+                      "1 Free 30-min check-in / mo",
+                      "Emergency grounding audio line",
                     ]),
                     
                     const SizedBox(height: 48),
@@ -110,15 +117,15 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
         duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.08),
+          color: isSelected ? const Color(0xFF065643) : Colors.white,
           borderRadius: BorderRadius.circular(32),
           border: Border.all(
-            color: isSelected ? Colors.white : Colors.white.withOpacity(0.1),
+            color: isSelected ? const Color(0xFF065643) : const Color(0xFF065643).withValues(alpha: 0.08),
             width: 2,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(isSelected ? 0.15 : 0.05),
+              color: Colors.black.withValues(alpha: isSelected ? 0.15 : 0.02),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -139,7 +146,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                       style: GoogleFonts.outfit(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: isSelected ? const Color(0xFF065643) : Colors.white,
+                        color: isSelected ? Colors.white : const Color(0xFF065643),
                       ),
                     ),
                   ],
@@ -149,7 +156,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                   style: GoogleFonts.outfit(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isSelected ? const Color(0xFF065643) : Colors.white,
+                    color: isSelected ? Colors.white : const Color(0xFF065643),
                   ),
                 ),
               ],
@@ -159,7 +166,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
               subtitle,
               style: GoogleFonts.outfit(
                 fontSize: 14,
-                color: isSelected ? const Color(0xFF065643).withOpacity(0.7) : Colors.white.withOpacity(0.4),
+                color: isSelected ? Colors.white.withValues(alpha: 0.8) : Colors.grey[600],
               ),
             ),
             const SizedBox(height: 20),
@@ -170,14 +177,14 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                   Icon(
                     Icons.check_circle_rounded,
                     size: 16,
-                    color: isSelected ? const Color(0xFF065643).withOpacity(0.6) : Colors.white.withOpacity(0.3),
+                    color: isSelected ? Colors.white.withValues(alpha: 0.7) : const Color(0xFF065643).withValues(alpha: 0.4),
                   ),
                   const SizedBox(width: 12),
                   Text(
                     f,
                     style: GoogleFonts.outfit(
                       fontSize: 14,
-                      color: isSelected ? const Color(0xFF065643).withOpacity(0.8) : Colors.white.withOpacity(0.7),
+                      color: isSelected ? Colors.white : Colors.grey[800],
                     ),
                   ),
                 ],
@@ -191,16 +198,28 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
 
   Widget _buildContinueButton() {
     return GestureDetector(
-      onTap: () => Navigator.pop(context),
+      onTap: () {
+        PlanController.selectPlan(_selectedPlanIndex);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Successfully updated to ${PlanController.currentPlan} Plan!", style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold)),
+            backgroundColor: const Color(0xFF0A7D62),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        Navigator.pop(context);
+      },
       child: Container(
         width: double.infinity,
         height: 65,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: const Color(0xFF065643),
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 15,
               offset: const Offset(0, 8),
             ),
@@ -210,7 +229,7 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
         child: Text(
           "Confirm Selection",
           style: GoogleFonts.outfit(
-            color: const Color(0xFF065643),
+            color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),

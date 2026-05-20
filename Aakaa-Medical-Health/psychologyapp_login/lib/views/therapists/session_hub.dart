@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/session_model.dart';
 import '../../models/consultation_type.dart';
+import '../../widgets/zen_background.dart';
 import '../therapists/chat_screen.dart';
 import '../therapists/video_call_screen.dart';
 import '../therapists/audio_call_screen.dart';
@@ -62,9 +63,16 @@ class _SessionHubState extends State<SessionHub> {
           child: Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
-              color: const Color(0xFF065643).withOpacity(0.98),
+              color: Colors.white,
               borderRadius: BorderRadius.circular(32),
-              border: Border.all(color: Colors.white.withOpacity(0.1)),
+              border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 25,
+                  offset: const Offset(0, 10),
+                ),
+              ],
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -72,21 +80,21 @@ class _SessionHubState extends State<SessionHub> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: const Color(0xFF065643).withValues(alpha: 0.08),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.favorite_rounded, color: Colors.white, size: 32),
+                  child: const Icon(Icons.favorite_rounded, color: Color(0xFF065643), size: 32),
                 ),
                 const SizedBox(height: 24),
                 Text(
                   "Session Completed",
-                  style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF065643)),
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "How was your experience with Dr. ${widget.session.therapistName.split(' ').last}?",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.5), fontSize: 16),
+                  style: GoogleFonts.outfit(color: Colors.grey[600], fontSize: 16),
                 ),
                 const SizedBox(height: 32),
                 Row(
@@ -95,7 +103,7 @@ class _SessionHubState extends State<SessionHub> {
                     return IconButton(
                       icon: Icon(
                         index < _rating ? Icons.star_rounded : Icons.star_outline_rounded,
-                        color: index < _rating ? Colors.amber : Colors.white.withOpacity(0.2),
+                        color: index < _rating ? Colors.amber : Colors.grey[300],
                         size: 40,
                       ),
                       onPressed: () => setDialogState(() => _rating = index + 1.0),
@@ -105,17 +113,17 @@ class _SessionHubState extends State<SessionHub> {
                 const SizedBox(height: 32),
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.05),
+                    color: const Color(0xFF065643).withValues(alpha: 0.04),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
                   ),
                   child: TextField(
                     controller: _feedbackController,
                     maxLines: 3,
-                    style: GoogleFonts.outfit(color: Colors.white),
+                    style: GoogleFonts.outfit(color: const Color(0xFF065643)),
                     decoration: InputDecoration(
                       hintText: "Any thoughts you'd like to share?",
-                      hintStyle: GoogleFonts.outfit(color: Colors.white.withOpacity(0.2)),
+                      hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4)),
                       contentPadding: const EdgeInsets.all(20),
                       border: InputBorder.none,
                     ),
@@ -127,16 +135,15 @@ class _SessionHubState extends State<SessionHub> {
                   height: 60,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog
-                      Navigator.of(context).pop(); // Exit Hub
+                      Navigator.of(context).popUntil((route) => route.isFirst);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: const Color(0xFF065643),
+                      backgroundColor: const Color(0xFF065643),
+                      foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                       elevation: 0,
                     ),
-                    child: Text("Done", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 18)),
+                    child: Text("Done", style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white)),
                   ),
                 ),
               ],
@@ -163,188 +170,201 @@ class _SessionHubState extends State<SessionHub> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Gradient
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [Color(0xFF065643), Color(0xFF0A7D62), Color(0xFF065643)],
-              ),
-            ),
-          ),
-          
-          SafeArea(
-            child: Column(
-              children: [
-                // Top Bar
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      const Spacer(),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.shield_rounded, color: Colors.greenAccent, size: 14),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Secure Session",
-                              style: GoogleFonts.outfit(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                // Timer Circle
-                Stack(
-                  alignment: Alignment.center,
+      backgroundColor: const Color(0xFFFFF7F5),
+      body: ZenBackground(
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Top Bar
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Row(
                   children: [
+                    IconButton(
+                      icon: const Icon(Icons.close_rounded, color: Color(0xFF065643)),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    const Spacer(),
                     Container(
-                      width: 260,
-                      height: 260,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 40,
-                            spreadRadius: 5,
+                            color: Colors.black.withValues(alpha: 0.02),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.shield_rounded, color: Color(0xFF0A7D62), size: 14),
+                          const SizedBox(width: 8),
+                          Text(
+                            "Secure Session",
+                            style: GoogleFonts.outfit(
+                              color: const Color(0xFF065643), 
+                              fontSize: 12, 
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    SizedBox(
-                      width: 240,
-                      height: 240,
-                      child: CircularProgressIndicator(
-                        value: _remainingTime.inSeconds / widget.session.endTime.difference(widget.session.startTime).inSeconds,
-                        strokeWidth: 4,
-                        color: Colors.white,
-                        backgroundColor: Colors.white.withOpacity(0.05),
-                      ),
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          "Time Remaining",
-                          style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.5), fontSize: 14),
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          _formatTime(_remainingTime),
-                          style: GoogleFonts.outfit(
-                            color: Colors.white,
-                            fontSize: 54,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
+                  ],
+                ),
+              ),
+
+              const Spacer(),
+
+              // Timer Circle
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 260,
+                    height: 260,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.03),
+                          blurRadius: 30,
+                          spreadRadius: 5,
                         ),
                       ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 240,
+                    height: 240,
+                    child: CircularProgressIndicator(
+                      value: widget.session.endTime.difference(widget.session.startTime).inSeconds == 0 
+                          ? 1.0 
+                          : _remainingTime.inSeconds / widget.session.endTime.difference(widget.session.startTime).inSeconds,
+                      strokeWidth: 6,
+                      color: const Color(0xFF065643),
+                      backgroundColor: const Color(0xFF065643).withValues(alpha: 0.08),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        "Time Remaining",
+                        style: GoogleFonts.outfit(color: Colors.grey[500], fontSize: 14, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        _formatTime(_remainingTime),
+                        style: GoogleFonts.outfit(
+                          color: const Color(0xFF065643),
+                          fontSize: 54,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              const Spacer(),
+
+              // Therapist Brief Card
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(32),
+                  border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.08)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.02),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
                     ),
                   ],
                 ),
-
-            const Spacer(),
-
-            // Therapist Brief Card
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 56,
-                    height: 56,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1), 
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.1)),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 56,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF065643).withValues(alpha: 0.08), 
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.session.therapistInitials, 
+                        style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
                     ),
-                    alignment: Alignment.center,
-                    child: Text(widget.session.therapistInitials, style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20)),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.session.therapistName,
-                          style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        Text(
-                          "Clinical Specialist",
-                          style: GoogleFonts.outfit(color: Colors.white.withOpacity(0.5), fontSize: 13),
-                        ),
-                      ],
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.session.therapistName,
+                            style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          Text(
+                            "Clinical Specialist",
+                            style: GoogleFonts.outfit(color: Colors.grey[500], fontSize: 13),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const Icon(Icons.check_circle_rounded, color: Colors.greenAccent, size: 24),
-                ],
+                    const Icon(Icons.check_circle_rounded, color: Color(0xFF0A7D62), size: 24),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-            // Control Buttons
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  _buildActionButton(
-                    Icons.chat_bubble_rounded, 
-                    "Chat", 
-                    widget.session.consultationType == ConsultationType.message,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(therapistName: widget.session.therapistName))),
-                  ),
-                  const SizedBox(width: 12),
-                  _buildActionButton(
-                    Icons.call_rounded, 
-                    "Audio", 
-                    widget.session.consultationType == ConsultationType.audio,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => AudioCallScreen(therapistName: widget.session.therapistName))),
-                  ),
-                  const SizedBox(width: 12),
-                  _buildActionButton(
-                    Icons.videocam_rounded, 
-                    "Video", 
-                    widget.session.consultationType == ConsultationType.video,
-                    () => Navigator.push(context, MaterialPageRoute(builder: (_) => VideoCallScreen(therapistName: widget.session.therapistName))),
-                  ),
-                ],
+              // Control Buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    _buildActionButton(
+                      Icons.chat_bubble_rounded, 
+                      "Chat", 
+                      widget.session.consultationType == ConsultationType.message,
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(therapistName: widget.session.therapistName))),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildActionButton(
+                      Icons.call_rounded, 
+                      "Audio", 
+                      widget.session.consultationType == ConsultationType.audio,
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => AudioCallScreen(therapistName: widget.session.therapistName))),
+                    ),
+                    const SizedBox(width: 12),
+                    _buildActionButton(
+                      Icons.videocam_rounded, 
+                      "Video", 
+                      widget.session.consultationType == ConsultationType.video,
+                      () => Navigator.push(context, MaterialPageRoute(builder: (_) => VideoCallScreen(therapistName: widget.session.therapistName))),
+                    ),
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 60),
-          ],
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
-    ],
-  ),
-);
+    );
   }
 
   Widget _buildActionButton(IconData icon, String label, bool isEnabled, VoidCallback onTap) {
@@ -355,32 +375,38 @@ class _SessionHubState extends State<SessionHub> {
           duration: const Duration(milliseconds: 300),
           padding: const EdgeInsets.symmetric(vertical: 24),
           decoration: BoxDecoration(
-            color: isEnabled ? Colors.white : Colors.white.withOpacity(0.03),
+            color: Colors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: isEnabled ? Colors.white : Colors.white.withOpacity(0.05),
-              width: 1,
+              color: isEnabled ? const Color(0xFF065643).withValues(alpha: 0.15) : const Color(0xFF065643).withValues(alpha: 0.05),
+              width: isEnabled ? 1.5 : 1.0,
             ),
             boxShadow: isEnabled ? [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: const Color(0xFF065643).withValues(alpha: 0.06),
                 blurRadius: 20,
                 offset: const Offset(0, 10),
               )
-            ] : [],
+            ] : [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.01),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              )
+            ],
           ),
           child: Column(
             children: [
               Icon(
                 icon, 
-                color: isEnabled ? const Color(0xFF065643) : Colors.white.withOpacity(0.1), 
+                color: isEnabled ? const Color(0xFF065643) : Colors.grey[300], 
                 size: 30,
               ),
               const SizedBox(height: 12),
               Text(
                 label,
                 style: GoogleFonts.outfit(
-                  color: isEnabled ? const Color(0xFF065643) : Colors.white.withOpacity(0.1),
+                  color: isEnabled ? const Color(0xFF065643) : Colors.grey[400],
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 ),

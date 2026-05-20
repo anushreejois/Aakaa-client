@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:ui';
+import '../widgets/zen_background.dart';
 
 class AffirmationDeck extends StatefulWidget {
   const AffirmationDeck({super.key});
@@ -35,70 +35,56 @@ class _AffirmationDeckState extends State<AffirmationDeck> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F5),
-      body: Stack(
-        children: [
-          // Background soft gradient
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [Color(0xFFFFF7F5), Color(0xFFFFEFEA)],
+      body: ZenBackground(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ),
-            ),
-          ),
-
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-                
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Affirmation Deck",
-                        style: GoogleFonts.outfit(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF065643),
-                        ),
+              
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Affirmation Deck",
+                      style: GoogleFonts.outfit(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF065643),
                       ),
-                      Text(
-                        "Swipe to manifest your truth.",
-                        style: GoogleFonts.outfit(color: Colors.grey[600], fontSize: 16),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Text(
+                      "Swipe to manifest your truth.",
+                      style: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.6), fontSize: 16),
+                    ),
+                  ],
                 ),
+              ),
 
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: _affirmations.length,
-                    itemBuilder: (context, index) {
-                      double scale = (1 - (_currentPage - index).abs() * 0.1).clamp(0.8, 1.0);
-                      return _buildAffirmationCard(_affirmations[index], scale);
-                    },
-                  ),
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _affirmations.length,
+                  itemBuilder: (context, index) {
+                    double scale = (1 - (_currentPage - index).abs() * 0.1).clamp(0.8, 1.0);
+                    return _buildAffirmationCard(_affirmations[index], scale);
+                  },
                 ),
-                
-                const SizedBox(height: 100),
-              ],
-            ),
+              ),
+              
+              const SizedBox(height: 60),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -117,7 +103,7 @@ class _AffirmationDeckState extends State<AffirmationDeck> {
           ),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF065643).withOpacity(0.3),
+              color: const Color(0xFF065643).withValues(alpha: 0.3),
               blurRadius: 30,
               offset: const Offset(0, 15),
             ),
@@ -129,7 +115,7 @@ class _AffirmationDeckState extends State<AffirmationDeck> {
             Positioned(
               top: -20,
               right: -20,
-              child: CircleAvatar(radius: 60, backgroundColor: Colors.white.withOpacity(0.05)),
+              child: CircleAvatar(radius: 60, backgroundColor: Colors.white.withValues(alpha: 0.05)),
             ),
             
             Padding(
@@ -153,7 +139,7 @@ class _AffirmationDeckState extends State<AffirmationDeck> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
+                      color: Colors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
