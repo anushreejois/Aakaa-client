@@ -66,33 +66,34 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
                     ),
                     const SizedBox(height: 32),
                     
-                    _buildPlanCard(0, "Freemium", "🧪", "The daily habit", "Free", [
-                      "Basic profile setup",
-                      "Daily affirmations & breathing",
-                      "7-day mood history",
-                      "Explore therapist directory",
+                    _buildPlanCard(0, "Freemium", "🧪", "Daily habit starter", "Free", [
+                      "Basic daily mood logs & affirmations",
+                      "Single sleep track (Midnight Rain)",
+                      "Search therapist directory",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(1, "Basic", "🎯", "Self-help mastery", "₹399/mo", [
-                      "Unlimited mood & sleep analytics",
-                      "Full audio sleep sanctuaries",
-                      "5 AI journal analyses / mo",
-                      "Priority support access",
+                    _buildPlanCard(1, "Basic", "🎯", "The active companion", "₹199/mo", [
+                      "Real-Time Active Caretaker check-ins",
+                      "Safe Vent Lounge (Burn & Release)",
+                      "Zen Sleep Mixer & customizable sliders",
+                      "5 AI Journal analyses per month",
+                      "Daily Caretaker push reminders",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(2, "Standard", "⭐", "Guided care", "₹899/mo", [
-                      "Unlimited AI clinical coach",
+                    _buildPlanCard(2, "Standard", "⭐", "Guided care", "₹399/mo", [
+                      "Everything in Basic (Unlimited)",
                       "Direct doctor text messaging",
-                      "Monthly psychological PDF reports",
-                      "10% off live video sessions",
+                      "Therapist CBT Diagnostic sharing",
+                      "Monthly Certified Progress PDF reports",
+                      "10% off live video/audio sessions",
                     ]),
                     const SizedBox(height: 16),
-                    _buildPlanCard(3, "Premium", "💎", "Complete VIP care", "₹1799/mo", [
-                      "Dedicated matched therapist",
-                      "Priority 3h doctor response",
-                      "Weekly certified clinical reports",
-                      "1 Free 30-min check-in / mo",
-                      "Emergency grounding audio line",
+                    _buildPlanCard(3, "Premium", "💎", "VIP clinical care", "₹799/mo", [
+                      "Everything in Standard",
+                      "1 Free 30-min live session / month",
+                      "All Vent animations (Burn, Bubble, Cosmic)",
+                      "24/7 Emergency Grounding Audio Line",
+                      "Priority 3h doctor response & reports",
                     ]),
                     
                     const SizedBox(height: 48),

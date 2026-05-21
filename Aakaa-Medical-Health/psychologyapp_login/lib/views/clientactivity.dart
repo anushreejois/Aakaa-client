@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/controllers/activity_controller.dart';
+import 'package:psychologyapp_login/controllers/plan_controller.dart';
 import 'package:psychologyapp_login/views/affirmation_deck.dart';
 import 'package:psychologyapp_login/views/clientmysession.dart';
 import 'package:psychologyapp_login/views/gratitude_practice.dart';
@@ -8,6 +9,11 @@ import 'package:psychologyapp_login/views/mindfulness_timer.dart';
 import 'package:psychologyapp_login/views/mood_journey.dart';
 import 'package:psychologyapp_login/views/reflective_journal.dart';
 import 'package:psychologyapp_login/views/sleep_sanctuaries.dart';
+import 'package:psychologyapp_login/views/premium_gate_dialog.dart';
+import 'package:psychologyapp_login/views/caretaker_companion_screen.dart';
+import 'package:psychologyapp_login/views/vent_release_lounge.dart';
+import 'package:psychologyapp_login/views/emergency_grounding_line.dart';
+import 'package:psychologyapp_login/views/clinical_report_hub.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
 
 class ClientActivity extends StatefulWidget {
@@ -76,6 +82,82 @@ class _ClientActivityState extends State<ClientActivity> {
                     _buildSectionHeader("Recent Reflections"),
                     const SizedBox(height: 16),
                     _buildRecentReflectionsCard(),
+                    const SizedBox(height: 32),
+                    _buildSectionHeader("Clinical & AI Self-Care Support"),
+                    const SizedBox(height: 16),
+                    ValueListenableBuilder<int>(
+                      valueListenable: PlanController.planIndexNotifier,
+                      builder: (context, planIndex, child) {
+                        return Column(
+                          children: [
+                            _buildActivityTile(
+                              Icons.psychology_rounded, 
+                              "Caretaker Companion", 
+                              isLocked: !PlanController.isCaretakerAllowed,
+                              badgeText: "Basic+",
+                              onTap: () {
+                                if (PlanController.isCaretakerAllowed) {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const CaretakerCompanionScreen()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const PremiumAccessDialog(featureName: "Active Caretaker Companion"),
+                                  );
+                                }
+                              },
+                            ),
+                            _buildActivityTile(
+                              Icons.volunteer_activism_rounded, 
+                              "Safe Vent Lounge", 
+                              isLocked: !PlanController.isVentLoungeAllowed,
+                              badgeText: "Basic+",
+                              onTap: () {
+                                if (PlanController.isVentLoungeAllowed) {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const VentReleaseLounge()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const PremiumAccessDialog(featureName: "Safe Vent Lounge"),
+                                  );
+                                }
+                              },
+                            ),
+                            _buildActivityTile(
+                              Icons.verified_user_rounded, 
+                              "Clinical Progress Hub", 
+                              isLocked: !PlanController.isClinicalReportAllowed,
+                              badgeText: "Standard+",
+                              onTap: () {
+                                if (PlanController.isClinicalReportAllowed) {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ClinicalReportHub()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const PremiumAccessDialog(featureName: "Clinical Progress Reports Dashboard"),
+                                  );
+                                }
+                              },
+                            ),
+                            _buildActivityTile(
+                              Icons.emergency_share_rounded, 
+                              "Grounding Hotline (SOS)", 
+                              isLocked: !PlanController.isEmergencyLineAllowed,
+                              badgeText: "Premium",
+                              onTap: () {
+                                if (PlanController.isEmergencyLineAllowed) {
+                                  Navigator.push(context, MaterialPageRoute(builder: (_) => const EmergencyGroundingLine()));
+                                } else {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) => const PremiumAccessDialog(featureName: "24/7 Somatic Grounding Hotline"),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                     const SizedBox(height: 32),
                     _buildSectionHeader("Mindful Practices"),
                     const SizedBox(height: 16),
@@ -347,7 +429,7 @@ class _ClientActivityState extends State<ClientActivity> {
     );
   }
 
-  Widget _buildActivityTile(IconData icon, String title, {VoidCallback? onTap}) {
+  Widget _buildActivityTile(IconData icon, String title, {VoidCallback? onTap, bool isLocked = false, String? badgeText}) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -359,12 +441,42 @@ class _ClientActivityState extends State<ClientActivity> {
       child: ListTile(
         onTap: onTap,
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-        leading: Icon(icon, color: const Color(0xFF065643), size: 20),
-        title: Text(
-          title,
-          style: GoogleFonts.outfit(fontWeight: FontWeight.w500, color: const Color(0xFF065643), fontSize: 15),
+        leading: Icon(icon, color: isLocked ? Colors.grey[400] : const Color(0xFF065643), size: 20),
+        title: Row(
+          children: [
+            Text(
+              title,
+              style: GoogleFonts.outfit(
+                fontWeight: FontWeight.w500,
+                color: isLocked ? Colors.grey[400] : const Color(0xFF065643),
+                fontSize: 15,
+              ),
+            ),
+            if (badgeText != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: isLocked 
+                      ? Colors.amberAccent.withValues(alpha: 0.15) 
+                      : const Color(0xFF065643).withValues(alpha: 0.08),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  badgeText,
+                  style: GoogleFonts.outfit(
+                    fontSize: 9, 
+                    fontWeight: FontWeight.bold, 
+                    color: isLocked ? Colors.amber[800] : const Color(0xFF065643),
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
-        trailing: Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey[400]),
+        trailing: isLocked 
+            ? Icon(Icons.lock_person_rounded, size: 16, color: Colors.amber[600])
+            : Icon(Icons.arrow_forward_ios_rounded, size: 12, color: Colors.grey[400]),
       ),
     );
   }

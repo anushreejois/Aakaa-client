@@ -165,28 +165,31 @@ class _ClientPlanState extends State<ClientPlan>{
 
   List<_Benefit> _getIncludedBenefits(int index) {
     List<_Benefit> benefits = [
-      _Benefit(Icons.person_outline_rounded, "Basic profile setup"),
-      _Benefit(Icons.auto_awesome_outlined, "Daily affirmations & breathing"),
-      _Benefit(Icons.search_rounded, "Explore therapist directory"),
+      _Benefit(Icons.auto_awesome_outlined, "Basic daily mood logs & affirmations"),
+      _Benefit(Icons.search_rounded, "Search therapist directory"),
     ];
 
     if (index >= 0) {
-      benefits.add(_Benefit(Icons.analytics_outlined, index == 0 ? "7-day mood history" : "Unlimited mood & sleep analytics"));
+      benefits.add(_Benefit(Icons.nights_stay_rounded, index == 0 ? "Single sleep track (Midnight Rain)" : "Zen Sleep Mixer & volume sliders"));
     }
     if (index >= 1) {
-      benefits.add(_Benefit(Icons.spa_outlined, "Full audio sleep sanctuaries"));
-      benefits.add(_Benefit(Icons.psychology_outlined, index == 1 ? "5 AI journal analyses / mo" : "Unlimited AI clinical coach"));
+      benefits.add(_Benefit(Icons.home_repair_service_rounded, "Real-Time Active Caretaker checks"));
+      benefits.add(_Benefit(Icons.volunteer_activism_rounded, "Safe Vent Lounge (Burn & Release)"));
+      benefits.add(_Benefit(Icons.psychology_outlined, index == 1 ? "5 AI Journal analyses per month" : "Unlimited Deep AI Journal insights"));
+      benefits.add(_Benefit(Icons.notifications_active_rounded, "Daily Caretaker push reminders"));
     }
     if (index >= 2) {
       benefits.add(_Benefit(Icons.chat_bubble_outline_rounded, "Direct doctor text messaging"));
-      benefits.add(_Benefit(Icons.picture_as_pdf_outlined, index == 2 ? "Monthly psychological PDF reports" : "Weekly certified clinical reports"));
-      benefits.add(_Benefit(Icons.discount_outlined, "10% off live video sessions"));
+      benefits.add(_Benefit(Icons.share_location_rounded, "Therapist CBT Diagnostic sharing"));
+      benefits.add(_Benefit(Icons.picture_as_pdf_outlined, index == 2 ? "Monthly Certified Progress PDF reports" : "Weekly Certified Progress PDF reports"));
+      benefits.add(_Benefit(Icons.discount_outlined, "10% off live video/audio sessions"));
     }
     if (index >= 3) {
       benefits.add(_Benefit(Icons.handshake_outlined, "Dedicated matched therapist"));
+      benefits.add(_Benefit(Icons.video_call_outlined, "1 Free 30-min live session / month"));
+      benefits.add(_Benefit(Icons.headset_mic_outlined, "24/7 Emergency Grounding Audio Line"));
+      benefits.add(_Benefit(Icons.local_fire_department_rounded, "All Vent animations (Burn, Bubble, Cosmic)"));
       benefits.add(_Benefit(Icons.timer_outlined, "Priority 3h doctor response"));
-      benefits.add(_Benefit(Icons.video_call_outlined, "1 Free 30-min check-in / mo"));
-      benefits.add(_Benefit(Icons.headset_mic_outlined, "Emergency grounding audio line"));
     }
     return benefits;
   }
@@ -194,25 +197,25 @@ class _ClientPlanState extends State<ClientPlan>{
   List<String> _getLockedBenefits(int index) {
     if (index == 0) {
       return [
-        "Unlimited mood & sleep analytics",
-        "Full audio sleep sanctuaries",
-        "AI clinical journal analyses",
-        "Direct doctor text messaging",
-        "Downloadable clinical reports",
+        "Real-Time Active Caretaker check-ins",
+        "Safe Vent Lounge & volume mixers",
+        "AI Journal sentiment & distortion analyses",
+        "Direct doctor text messaging & CBT sharing",
+        "1 Free 30-min live session / month",
       ];
     } else if (index == 1) {
       return [
-        "Unlimited AI clinical coach",
-        "Direct doctor text messaging",
-        "Downloadable clinical reports",
-        "1 Free 30-min live check-in / mo",
+        "Direct doctor text messaging & CBT sharing",
+        "Monthly Certified Progress PDF reports",
+        "1 Free 30-min live session / month",
+        "24/7 Emergency Grounding Audio Line",
       ];
     } else if (index == 2) {
       return [
-        "Dedicated matched therapist",
+        "1 Free 30-min live session / month",
+        "24/7 Emergency Grounding Audio Line",
+        "All Vent animations (Bubble & Cosmic options)",
         "Priority 3h doctor response",
-        "Weekly certified clinical reports",
-        "1 Free 30-min live check-in / mo",
       ];
     }
     return [];
