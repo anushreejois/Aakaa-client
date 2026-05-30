@@ -23,9 +23,27 @@ class ClientProfile extends StatefulWidget {
 }
 
 class _ClientProfileState extends State<ClientProfile> {
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProfile();
+  }
+
+  Future<void> _fetchProfile() async {
+    if (mounted) setState(() => _isLoading = true);
+    try {
+      await SignupLoginFunctionality().tryAutoLogin();
+    } catch (e) {
+      // Silently fall back to cached data
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   void _handleMessagingAccess() {
-    if (PlanController.isPremiumMember) {
+    if (PlanController.isDirectMessagingAllowed) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => const MessageHub()));
     } else {
       showDialog(

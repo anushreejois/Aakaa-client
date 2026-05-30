@@ -5,9 +5,9 @@ class PageSlide {
   int currentPage = 0;
 
   final List<String> infoTexts = [ 
-    "Aakaa: Your Inner Sky\nDiscover a sanctuary for healing, growth, and mindful living.",
-    "Personalized Therapy\nConnect with professional psychologists tailored to your unique journey.",
-    "Breathe. Heal. Grow.\nEmpowering your mind with evidence-based practices and care.",
+    "Aakaa: The Space Within\nStep into a quiet, cloudless sanctuary designed to soothe your thoughts, embrace your emotions, and align your inner sky.",
+    "Grounded Guidance\nFind absolute solace with hand-picked, certified specialists walking gently beside you through every shift of wind.",
+    "Mindful Evolution\nCultivate clinical resilience through beautiful sound sanctuaries, reflective journals, and scientific paths of healing.",
   ];
 
   final List<IconData> infoIcons = [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'plan_controller.dart';
 
 class UserModel {
   final String firstName;
@@ -93,5 +94,39 @@ class UserController {
 
   static void updateLanguage(String newLang) {
     languageNotifier.value = newLang;
+  }
+
+  static void updateUserFromBackend(Map<String, dynamic> userData) {
+    final String email = userData["email"] ?? "";
+    final String fullName = userData["fullName"] ?? "";
+    final String avatar = userData["avatarUrl"] ?? "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=400&fit=crop";
+    final String gender = userData["gender"] ?? "Female";
+    final String tier = userData["subscriptionTier"] ?? "freemium";
+
+    // Map subscription tier string to index:
+    int tierIndex = 0;
+    if (tier.toLowerCase() == "basic") tierIndex = 1;
+    else if (tier.toLowerCase() == "standard") tierIndex = 2;
+    else if (tier.toLowerCase() == "premium") tierIndex = 3;
+
+    PlanController.selectPlan(tierIndex);
+
+    String derivedFirst = "";
+    String derivedLast = "";
+    if (fullName.trim().isNotEmpty) {
+      final parts = fullName.trim().split(' ');
+      derivedFirst = parts.first;
+      if (parts.length > 1) {
+        derivedLast = parts.sublist(1).join(' ');
+      }
+    }
+
+    userNotifier.value = UserModel(
+      firstName: derivedFirst,
+      lastName: derivedLast,
+      avatarUrl: avatar,
+      gender: gender,
+      email: email,
+    );
   }
 }

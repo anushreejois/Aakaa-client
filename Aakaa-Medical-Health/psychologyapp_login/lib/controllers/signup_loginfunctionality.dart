@@ -1,91 +1,148 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'user_controller.dart';
 
-class SignupLoginFunctionality{
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+class SignupLoginFunctionality {
+  // Backend base URL:
+  // - Use 'http://10.0.2.2:5000' for Android Emulator (forwards to host localhost).
+  // - Use 'http://localhost:5000' for iOS Simulator or Flutter Web.
+  // - Use your computer's local IP address (e.g. 'http://192.168.x.x:5000') for physical test devices.
+  static const String backendUrl = "http://10.0.2.2:5000";
 
-  Future<String> signUpUser(String email, String confirmpassword) async {
-    String result = "Something went wrong";
-    
-    // DEMO MODE BYPASS
-    if (email.isNotEmpty) return "Success";
+  Future<String> signUpUser(String email, String password, String fullName) async {
+    try {
+      final url = Uri.parse("$backendUrl/api/auth/register");
+      
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": email.trim(),
+          "password": password,
+          "fullName": fullName.trim(),
+        }),
+      );
 
-    try{
-      // Creating new user with email and password
-      final usercred = await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: confirmpassword,
-    );
-    final userdoc = {
-      // Store the user details in Firestore
-      'Identifier': email,
-      'uid': usercred.user?.uid,
-      'createdAt': FieldValue.serverTimestamp(),
-    };
-    await _firestore.collection('Users').doc(usercred.user?.uid).set(userdoc);
-    result = "Success";
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'email-already-in-use':
-          result = 'That email is already in use.';
-          break;
-        case 'invalid-email':
-          result = 'The email address is badly formatted.';
-          break;
-        case 'weak-password':
-          result = 'The password is too weak.';
-          break;
-        case 'operation-not-allowed':
-          result = 'Email/password accounts are not enabled.';
-          break;
-        default:
-          result = e.message ?? e.code;
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 201) {
+        return "success";
+      } else {
+        return data["message"] ?? "Something went wrong";
       }
+    } catch (e) {
+      return "Connection failed. Please ensure the backend server is running.";
     }
-    catch(e){
-      try {
-        final currentUser = _auth.currentUser;
-        if (currentUser != null) await currentUser.delete();
-      } catch (_) {}
-      result = e.toString();
-    }
-    return result;
   }
 
   Future<String> loginUser(String email, String password) async {
-    String result ="Something went wrong";
+    try {
+      final url = Uri.parse("$backendUrl/api/auth/login");
+      
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": email.trim(),
+          "password": password,
+        }),
+      );
 
-    // DEMO MODE BYPASS
-    if (email.isNotEmpty) return "Login successful";
+      final data = jsonDecode(response.body);
 
-    try{
-      // Logging in user with email and password
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      result = "Login successful";
+      if (response.statusCode == 200) {
+        final userData = data["user"];
+        final token = data["token"];
 
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'user-not-found':
-          result = 'No user found for that email.';
-          break;
-        case 'wrong-password':
-          result = 'Wrong password provided.';
-          break;
-        case 'invalid-email':
-          result = 'The email address is badly formatted.';
-          break;
-        default:
-          result = e.message ?? e.code;
+        // Save token to SharedPreferences
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString("auth_token", token);
+        
+        // Save the authenticated user state to UserController
+        UserController.updateUserFromBackend(userData);
+        
+        return "Login successful";
+      } else {
+        return data["message"] ?? "Something went wrong";
       }
-    } catch(e){
-      result = e.toString();
+    } catch (e) {
+      return "Connection failed. Please ensure the backend server is running.";
     }
-    return result;
+  }
+
+  Future<bool> tryAutoLogin() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token");
+      if (token == null || token.isEmpty) {
+        return false;
+      }
+
+      final url = Uri.parse("$backendUrl/api/users/profile");
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data["status"] == "success") {
+        final userData = data["user"];
+        UserController.updateUserFromBackend(userData);
+        return true;
+      } else {
+        // Token expired or invalid, clear it
+        await prefs.remove("auth_token");
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<void> signOutUser(BuildContext context) async {
-    await _auth.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove("auth_token");
+  }
+
+  Future<String> updateProfile(String fullName, String avatarUrl, String gender) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token");
+      if (token == null || token.isEmpty) {
+        return "Unauthorized. Please log in again.";
+      }
+
+      final url = Uri.parse("$backendUrl/api/users/profile");
+      final response = await http.put(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "fullName": fullName,
+          "avatarUrl": avatarUrl,
+          "gender": gender,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data["status"] == "success") {
+        final userData = data["user"];
+        UserController.updateUserFromBackend(userData);
+        return "success";
+      } else {
+        return data["message"] ?? "Failed to update profile";
+      }
+    } catch (e) {
+      return "Network connection failed.";
+    }
   }
 }

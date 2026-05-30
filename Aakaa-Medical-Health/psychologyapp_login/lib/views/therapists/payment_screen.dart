@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../models/therapist_model.dart';
 import '../../models/consultation_type.dart';
 import '../../widgets/zen_background.dart';
 import 'payment_success_screen.dart';
+import '../../controllers/payment_service.dart';
+import '../../controllers/signup_loginfunctionality.dart';
 
 enum PaymentMethod { upi, card, wallet }
 
@@ -302,19 +307,92 @@ class _PaymentScreenState extends State<PaymentScreen> {
             ],
           ),
           child: ElevatedButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                PageRouteBuilder(
-                  transitionDuration: const Duration(milliseconds: 300),
-                  pageBuilder: (context, animation, secondaryAnimation) => PaymentSuccessScreen(
-                    therapist: widget.therapist, 
-                    consultationType: widget.consultationType
-                  ),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    return FadeTransition(opacity: animation, child: child);
-                  },
+            onPressed: () async {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const Center(
+                  child: CircularProgressIndicator(color: Color(0xFF065643)),
                 ),
+              );
+
+              await PaymentService.startPayment(
+                amount: total.toDouble(),
+                purpose: "booking",
+                context: context,
+                onSuccess: (successPayload) async {
+                  Navigator.pop(context); // Close loading spinner
+                  
+                  // Show verification loading spinner
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (context) => const Center(
+                      child: CircularProgressIndicator(color: Color(0xFF065643)),
+                    ),
+                  );
+
+                  try {
+                    final prefs = await SharedPreferences.getInstance();
+                    final token = prefs.getString("auth_token");
+                    
+                    final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/payments/verify-booking");
+                    
+                    final response = await http.post(
+                      url,
+                      headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer $token"
+                      },
+                      body: successPayload,
+                    );
+
+                    final verifyData = jsonDecode(response.body);
+                    Navigator.pop(context); // Close verification spinner
+
+                    if (response.statusCode == 200 && verifyData["status"] == "success") {
+                      if (mounted) {
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            transitionDuration: const Duration(milliseconds: 300),
+                            pageBuilder: (context, animation, secondaryAnimation) => PaymentSuccessScreen(
+                              therapist: widget.therapist, 
+                              consultationType: widget.consultationType
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              return FadeTransition(opacity: animation, child: child);
+                            },
+                          ),
+                        );
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(verifyData["message"] ?? "Payment verification failed."),
+                          backgroundColor: Colors.redAccent,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    Navigator.pop(context); // Close spinner
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Verification server connection failed."),
+                        backgroundColor: Colors.redAccent,
+                      ),
+                    );
+                  }
+                },
+                onFailure: (errorMsg) {
+                  Navigator.pop(context); // Close loading spinner
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(errorMsg),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                },
               );
             },
             style: ElevatedButton.styleFrom(

@@ -24,7 +24,7 @@ class _ClientMenuState extends State<ClientMenu>{
   String get result => screenname.isNotEmpty ? screenname : alternatescreenname;
 
   void _handleMessagingAccess() {
-    if (PlanController.isPremiumMember) {
+    if (PlanController.isDirectMessagingAllowed) {
       Navigator.push(context, MaterialPageRoute(builder: (_) => const MessageHub()));
     } else {
       showDialog(

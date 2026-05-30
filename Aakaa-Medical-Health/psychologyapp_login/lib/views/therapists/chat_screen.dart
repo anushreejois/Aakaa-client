@@ -1,6 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../widgets/zen_background.dart';
+import '../../controllers/signup_loginfunctionality.dart';
 
 class ChatScreen extends StatefulWidget {
   final String therapistName;
@@ -14,51 +19,169 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  
+  // Real Chat State
+  final List<_ChatMessage> _messages = [];
+  bool _isLoading = true;
+  String _errorMessage = "";
+  Timer? _syncTimer;
+  
+  // Default static therapist BSON ID for development/testing
+  final String _recipientId = "665000000000000000000001";
 
-  final List<_ChatMessage> _messages = [
-    _ChatMessage(text: 'Hello! How are you feeling today?', isMe: false, time: '10:00 AM'),
-    _ChatMessage(text: 'I wanted to check in on your progress with the breathing exercises.', isMe: false, time: '10:01 AM'),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchChatHistory(initialLoad: true);
+    
+    // Auto-poll for new messages every 2.5 seconds when active
+    _syncTimer = Timer.periodic(const Duration(milliseconds: 2500), (timer) {
+      _fetchChatHistory(initialLoad: false);
+    });
+  }
 
-  void _sendMessage() {
+  @override
+  void dispose() {
+    _syncTimer?.cancel();
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchChatHistory({required bool initialLoad}) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token");
+      if (token == null || token.isEmpty) return;
+
+      final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/chat/history/$_recipientId");
+      final response = await http.get(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data["status"] == "success") {
+          final List<dynamic> rawMessages = data["messages"] ?? [];
+          
+          final List<_ChatMessage> loadedMessages = rawMessages.map((msg) {
+            final String sender = msg["senderId"] ?? "";
+            // If sender is NOT the current recipient (therapist), it is me
+            final bool isMe = sender != _recipientId;
+            return _ChatMessage(
+              text: msg["messageText"] ?? "",
+              isMe: isMe,
+              time: _formatTime(msg["timestamp"]),
+            );
+          }).toList();
+
+          // Scroll to bottom only if new messages have arrived
+          final bool hasNewMessages = loadedMessages.length != _messages.length;
+
+          if (mounted) {
+            setState(() {
+              _messages.clear();
+              _messages.addAll(loadedMessages);
+              _isLoading = false;
+              _errorMessage = "";
+            });
+            
+            if (hasNewMessages && _messages.isNotEmpty) {
+              _scrollToBottom();
+            }
+          }
+        }
+      } else {
+        if (initialLoad && mounted) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = "Failed to load chat history.";
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint("Error fetching chat: $e");
+      if (initialLoad && mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = "Connection error. Ensure server is running.";
+        });
+      }
+    }
+  }
+
+  Future<void> _sendMessage() async {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
-    setState(() {
-      _messages.add(_ChatMessage(
-        text: text, 
-        isMe: true, 
-        time: TimeOfDay.now().format(context),
-      ));
-    });
-
+    // Clear input area immediately to optimize UX
     _controller.clear();
-    
-    // Auto-scroll to bottom
-    Future.delayed(const Duration(milliseconds: 100), () {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
 
-    // Simulate therapist reply
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      setState(() {
-        _messages.add(_ChatMessage(
-          text: 'Thank you for sharing that. It sounds like you are making real progress.',
-          isMe: false,
-          time: TimeOfDay.now().format(context),
-        ));
-      });
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token");
+      if (token == null || token.isEmpty) return;
+
+      // Append locally for instant visual response
+      final myNewMsg = _ChatMessage(
+        text: text,
+        isMe: true,
+        time: TimeOfDay.now().format(context),
       );
+
+      setState(() {
+        _messages.add(myNewMsg);
+      });
+      _scrollToBottom();
+
+      final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/chat/send");
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({
+          "recipientId": _recipientId,
+          "messageText": text
+        }),
+      );
+
+      if (response.statusCode != 201) {
+        debugPrint("Error sending message to backend.");
+      }
+    } catch (e) {
+      debugPrint("Exception sending chat: $e");
+    }
+  }
+
+  void _scrollToBottom() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     });
+  }
+
+  String _formatTime(String? isoString) {
+    if (isoString == null || isoString.isEmpty) return "Just now";
+    try {
+      final date = DateTime.parse(isoString).toLocal();
+      final hour = date.hour > 12 ? date.hour - 12 : (date.hour == 0 ? 12 : date.hour);
+      final minute = date.minute.toString().padLeft(2, '0');
+      final period = date.hour >= 12 ? 'PM' : 'AM';
+      return '$hour:$minute $period';
+    } catch (e) {
+      return "Just now";
+    }
   }
 
   @override
@@ -72,15 +195,21 @@ class _ChatScreenState extends State<ChatScreen> {
             _buildAppBar(),
             
             Expanded(
-              child: ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-                physics: const BouncingScrollPhysics(),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  return _buildMessageBubble(_messages[index]);
-                },
-              ),
+              child: _isLoading 
+                  ? const Center(child: CircularProgressIndicator(color: Color(0xFF065643)))
+                  : _errorMessage.isNotEmpty 
+                      ? _buildErrorPlaceholder()
+                      : _messages.isEmpty
+                          ? _buildEmptyPlaceholder()
+                          : ListView.builder(
+                              controller: _scrollController,
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: _messages.length,
+                              itemBuilder: (context, index) {
+                                return _buildMessageBubble(_messages[index]);
+                              },
+                            ),
             ),
             
             _buildInputArea(),
@@ -174,6 +303,55 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {},
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildErrorPlaceholder() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.cloud_off_rounded, color: Colors.redAccent, size: 48),
+            const SizedBox(height: 16),
+            Text(
+              _errorMessage,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(color: Colors.grey[600], fontSize: 15),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyPlaceholder() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.chat_bubble_outline_rounded, color: const Color(0xFF065643).withValues(alpha: 0.2), size: 64),
+            const SizedBox(height: 24),
+            Text(
+              "No messages yet",
+              style: GoogleFonts.outfit(
+                color: const Color(0xFF065643),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Start the conversation! Say hello to your matched therapist.",
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(color: Colors.grey[500], fontSize: 14),
+            ),
+          ],
+        ),
       ),
     );
   }

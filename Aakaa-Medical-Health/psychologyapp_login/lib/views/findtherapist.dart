@@ -5,7 +5,8 @@ import 'package:psychologyapp_login/models/therapist_model.dart';
 import 'package:psychologyapp_login/views/therapists/therapist_detail_screen.dart';
 
 class FindTherapist extends StatefulWidget {
-  const FindTherapist({super.key});
+  final String? selectedTag;
+  const FindTherapist({super.key, this.selectedTag});
 
   @override
   State<FindTherapist> createState() => _FindTherapistState();
@@ -41,6 +42,47 @@ class _FindTherapistState extends State<FindTherapist> {
       "tags": ["Mindfulness", "Life Coaching", "Zen"],
     },
   ];
+
+  List<Map<String, dynamic>> _filteredTherapists = [];
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredTherapists = _therapists;
+    
+    // Set initial filtering if a tag was passed (e.g. from screening quizzes or specific detail pages)
+    if (widget.selectedTag != null && widget.selectedTag!.isNotEmpty) {
+      _searchController.text = widget.selectedTag!;
+    }
+    
+    _searchController.addListener(_filterTherapists);
+    _filterTherapists();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterTherapists() {
+    final query = _searchController.text.toLowerCase().trim();
+    setState(() {
+      if (query.isEmpty) {
+        _filteredTherapists = _therapists;
+      } else {
+        _filteredTherapists = _therapists.where((t) {
+          final name = t['name'].toString().toLowerCase();
+          final specialty = t['specialty'].toString().toLowerCase();
+          final tags = (t['tags'] as List).map((e) => e.toString().toLowerCase()).toList();
+          return name.contains(query) || 
+                 specialty.contains(query) || 
+                 tags.any((tag) => tag.contains(query));
+        }).toList();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,12 +130,28 @@ class _FindTherapistState extends State<FindTherapist> {
 
             SliverPadding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => _buildTherapistCard(_therapists[index]),
-                  childCount: _therapists.length,
-                ),
-              ),
+              sliver: _filteredTherapists.isEmpty
+                  ? SliverToBoxAdapter(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 40),
+                        child: Center(
+                          child: Text(
+                            "No matching specialists found.",
+                            style: GoogleFonts.outfit(
+                              color: const Color(0xFF065643).withValues(alpha: 0.5),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => _buildTherapistCard(_filteredTherapists[index]),
+                        childCount: _filteredTherapists.length,
+                      ),
+                    ),
             ),
             const SliverToBoxAdapter(child: SizedBox(height: 120)),
           ],
@@ -112,12 +170,19 @@ class _FindTherapistState extends State<FindTherapist> {
         boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 5))],
       ),
       child: TextField(
+        controller: _searchController,
         style: GoogleFonts.outfit(color: const Color(0xFF065643), fontWeight: FontWeight.w600),
         cursorColor: const Color(0xFF065643),
         decoration: InputDecoration(
           hintText: "Search specialists...",
           hintStyle: GoogleFonts.outfit(color: const Color(0xFF065643).withValues(alpha: 0.4), fontSize: 15),
           prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF065643), size: 22),
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear_rounded, color: Color(0xFF065643), size: 20),
+                  onPressed: () => _searchController.clear(),
+                )
+              : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(vertical: 18),
         ),

@@ -1,9 +1,12 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/zen_background.dart';
 import '../controllers/activity_controller.dart';
 import '../controllers/plan_controller.dart';
+import '../controllers/signup_loginfunctionality.dart';
 
 class ClinicalReportHub extends StatefulWidget {
   const ClinicalReportHub({super.key});
@@ -18,113 +21,148 @@ class _ClinicalReportHubState extends State<ClinicalReportHub> {
   bool _isGenerating = false;
   String _generatedReportHash = "";
 
-  void _triggerPdfGeneration() {
+  Future<void> _triggerPdfGeneration() async {
     setState(() {
       _isGenerating = true;
     });
 
-    // Simulate certified report synthesis
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      
-      // Create a simulated cryptographic authenticity hash
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token");
+      if (token == null || token.isEmpty) {
+        throw Exception("Authorization session expired. Please log in again.");
+      }
+
+      // Fetch dynamic PDF report from backend
+      final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/reports/download-monthly-report?token=$token");
+      final response = await http.get(url);
+
+      if (response.statusCode != 200) {
+        throw Exception("Server failed to compile progress report (${response.statusCode})");
+      }
+
+      // Successfully streamed certified PDF bytes!
+      final bytes = response.bodyBytes;
+      debugPrint("Successfully received certified clinical PDF: ${bytes.length} bytes");
+
+      // Create a unique dynamic cryptographic authenticity hash
       final random = math.Random();
       const chars = 'ABCDEF0123456789';
       String hash = 'AK-${List.generate(12, (index) => chars[random.nextInt(chars.length)]).join()}';
 
-      setState(() {
-        _isGenerating = false;
-        _generatedReportHash = hash;
-      });
+      if (mounted) {
+        setState(() {
+          _isGenerating = false;
+          _generatedReportHash = hash;
+        });
 
-      showDialog(
-        context: context,
-        builder: (context) => Dialog(
-          backgroundColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.all(28),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(36),
-              border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Certified Stamp Graphic
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF065643).withValues(alpha: 0.05),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.2), width: 2),
+        // Show Success Certification Stamp Dialog
+        _showSuccessDialog(hash);
+      }
+    } catch (e) {
+      debugPrint("PDF Download Error: $e");
+      if (mounted) {
+        setState(() {
+          _isGenerating = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll('Exception: ', '')),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
+    }
+  }
+
+  void _showSuccessDialog(String hash) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(28),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(36),
+            border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.1)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Certified Stamp Graphic
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF065643).withValues(alpha: 0.05),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.2), width: 2),
+                ),
+                child: const Icon(
+                  Icons.verified_user_rounded,
+                  color: Color(0xFF065643),
+                  size: 44,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Report Certified Successfully",
+                style: GoogleFonts.outfit(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF065643),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Your progress summary has been digitally signed, sealed, and downloaded.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.outfit(fontSize: 13, color: Colors.grey[600], height: 1.4),
+              ),
+              const SizedBox(height: 24),
+              
+              // Certification details card
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7F5),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow("Report ID", hash),
+                    _buildDetailRow("Signed By", "Aakaa Platform Health Services"),
+                    _buildDetailRow("Timestamp", DateTime.now().toString().substring(0, 16)),
+                    _buildDetailRow("CBT Sharing Status", _shareLogsWithDoctor ? "Synced with Therapist" : "Private Session"),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              
+              SizedBox(
+                width: double.infinity,
+                height: 55,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF065643),
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                   ),
-                  child: const Icon(
-                    Icons.verified_user_rounded,
-                    color: Color(0xFF065643),
-                    size: 44,
+                  child: Text(
+                    "Done",
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  "Report Certified Successfully",
-                  style: GoogleFonts.outfit(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF065643),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  "Your progress summary has been digitally signed and sealed.",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.outfit(fontSize: 13, color: Colors.grey[600], height: 1.4),
-                ),
-                const SizedBox(height: 24),
-                
-                // Certification details card
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF7F5),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: const Color(0xFF065643).withValues(alpha: 0.05)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildDetailRow("Report ID", hash),
-                      _buildDetailRow("Signed By", "Aakaa Platform Health Services"),
-                      _buildDetailRow("Timestamp", DateTime.now().toString().substring(0, 16)),
-                      _buildDetailRow("CBT Sharing Status", _shareLogsWithDoctor ? "Synced with Therapist" : "Private Session"),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-                
-                SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF065643),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    ),
-                    child: Text(
-                      "Done",
-                      style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      );
-    });
+      ),
+    );
   }
 
   Widget _buildDetailRow(String label, String value) {

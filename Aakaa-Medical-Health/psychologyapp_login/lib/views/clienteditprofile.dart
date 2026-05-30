@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/zen_background.dart';
 import '../controllers/user_controller.dart';
+import '../controllers/signup_loginfunctionality.dart';
 
 class EditProfile extends StatefulWidget {
   final String? currentAvatar;
@@ -304,7 +305,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Widget _buildUpdateButton() {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         String genderStr = "Female";
         if (_selectedGender == Gender.male) {
           genderStr = "Male";
@@ -312,13 +313,42 @@ class _EditProfileState extends State<EditProfile> {
           genderStr = "Other";
         }
 
-        UserController.updateProfile(
-          firstName: _firstNameController.text.trim(),
-          lastName: _lastNameController.text.trim(),
-          avatarUrl: _selectedAvatar,
-          gender: genderStr,
+        final fullName = "${_firstNameController.text.trim()} ${_lastNameController.text.trim()}";
+
+        // Show loading spinner
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const Center(
+            child: CircularProgressIndicator(color: Color(0xFF065643)),
+          ),
         );
-        Navigator.pop(context, _selectedAvatar);
+
+        final result = await SignupLoginFunctionality().updateProfile(
+          fullName,
+          _selectedAvatar,
+          genderStr,
+        );
+
+        if (mounted) {
+          Navigator.pop(context); // Close loading spinner
+          if (result == "success") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Profile updated successfully! 🎉"),
+                backgroundColor: Color(0xFF065643),
+              ),
+            );
+            Navigator.pop(context, _selectedAvatar);
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(result),
+                backgroundColor: Colors.redAccent,
+              ),
+            );
+          }
+        }
       },
       child: Container(
         width: double.infinity,

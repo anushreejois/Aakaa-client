@@ -1,9 +1,13 @@
 import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/zen_background.dart';
 import '../controllers/activity_controller.dart';
 import '../controllers/plan_controller.dart';
+import '../controllers/signup_loginfunctionality.dart';
 import 'clientsubscription.dart';
 
 class ReflectiveJournal extends StatefulWidget {
@@ -18,11 +22,95 @@ class _ReflectiveJournalState extends State<ReflectiveJournal> {
   bool _isSaving = false;
   bool _showAnalysis = false;
 
-  // Simulated AI analysis results
+  // Real AI analysis results
   String _detectedSentiment = "Peaceful Reflection";
   Color _sentimentColor = const Color(0xFF00C853);
   String _detectedDistortion = "None detected (Healthy emotional waves)";
   String _breakthroughAdvice = "You expressed your emotions cleanly. Keep breathing and staying present.";
+
+  Color _parseHexColor(String hexStr) {
+    try {
+      String cleanHex = hexStr.replaceAll('#', '');
+      if (cleanHex.length == 6) {
+        cleanHex = 'FF$cleanHex';
+      }
+      return Color(int.parse('0x$cleanHex'));
+    } catch (e) {
+      return const Color(0xFF0A7D62);
+    }
+  }
+
+  Future<void> _saveEntry() async {
+    final text = _contentController.text.trim();
+    if (text.isEmpty) return;
+    
+    setState(() => _isSaving = true);
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString("auth_token") ?? "";
+      
+      final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/ai/analyze-journal");
+      
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        },
+        body: jsonEncode({"content": text}),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200 && data["status"] == "success") {
+        ActivityController.addJournalEntry(text);
+        
+        setState(() {
+          _detectedSentiment = data["sentiment"] ?? "Calm Spectrum";
+          _sentimentColor = _parseHexColor(data["sentimentColor"] ?? "#0A7D62");
+          _detectedDistortion = data["distortion"] ?? "None detected";
+          _breakthroughAdvice = data["advice"] ?? "Your reflection has been released successfully.";
+          _isSaving = false;
+          _showAnalysis = true;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Your reflection has been released.", style: GoogleFonts.outfit(color: Colors.white)),
+              backgroundColor: const Color(0xFF0A7D62),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      } else {
+        throw Exception(data["message"] ?? "Analysis failed");
+      }
+    } catch (e) {
+      setState(() => _isSaving = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("AI Analysis failed. Showing mock analysis locally.", style: GoogleFonts.outfit(color: Colors.white)),
+            backgroundColor: Colors.amber[800],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        
+        // Fallback to local simulated mock analysis to ensure zero breakage
+        ActivityController.addJournalEntry(text);
+        _generateAnalysisMock(text);
+        setState(() {
+          _showAnalysis = true;
+        });
+      }
+    }
+  }
 
   void _generateAnalysisMock(String text) {
     String t = text.toLowerCase();
@@ -47,33 +135,6 @@ class _ReflectiveJournalState extends State<ReflectiveJournal> {
       _detectedDistortion = "Healthy Core Intention";
       _breakthroughAdvice = "Your thoughts show beautiful self-awareness and balance. Continuing this journaling discipline will strengthen your emotional resilience dramatically.";
     }
-  }
-
-  void _saveEntry() {
-    if (_contentController.text.trim().isEmpty) return;
-    
-    setState(() => _isSaving = true);
-    
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) {
-        ActivityController.addJournalEntry(_contentController.text.trim());
-        _generateAnalysisMock(_contentController.text.trim());
-        setState(() {
-          _isSaving = false;
-          _showAnalysis = true;
-        });
-        
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Your reflection has been released.", style: GoogleFonts.outfit(color: Colors.white)),
-            backgroundColor: const Color(0xFF0A7D62),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            duration: const Duration(seconds: 1),
-          ),
-        );
-      }
-    });
   }
 
   @override

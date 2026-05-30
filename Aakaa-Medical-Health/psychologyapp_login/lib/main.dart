@@ -3,7 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:psychologyapp_login/controllers/signup_loginfunctionality.dart';
+import 'package:psychologyapp_login/controllers/user_controller.dart';
 import 'package:psychologyapp_login/views/getstarted.dart';
+import 'package:psychologyapp_login/views/clientnavigationbar.dart';
 
 void main() async{
   // Ensure that plugin services are initialized so that `Firebase.initializeApp()` can be called
@@ -18,12 +21,21 @@ void main() async{
           ),
       )
       : await Firebase.initializeApp();
+
+  bool autoLoggedIn = false;
+  try {
+    autoLoggedIn = await SignupLoginFunctionality().tryAutoLogin();
+  } catch (e) {
+    // Session load failed
+  }
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.top]);
-  runApp(const MyApp());
+  runApp(MyApp(autoLoggedIn: autoLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool autoLoggedIn;
+  const MyApp({super.key, this.autoLoggedIn = false});
 
   // This widget is the root of your application.
   @override
@@ -95,7 +107,9 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: const GetStarted(),
+      home: autoLoggedIn
+          ? ClientNavigationBar(email: UserController.currentUser.email)
+          : const GetStarted(),
     );
   }
 }

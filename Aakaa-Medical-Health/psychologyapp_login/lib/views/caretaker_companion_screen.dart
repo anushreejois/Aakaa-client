@@ -9,8 +9,6 @@ class CaretakerCompanionScreen extends StatefulWidget {
   State<CaretakerCompanionScreen> createState() => _CaretakerCompanionScreenState();
 }
 
-class _ClientCaretakerCompanionState {} // Placeholder to match any internal states if needed
-
 class _CaretakerCompanionScreenState extends State<CaretakerCompanionScreen> {
   int _waterGlasses = 0;
   final List<String> _loggedMeals = [];
@@ -99,7 +97,7 @@ class _CaretakerCompanionScreenState extends State<CaretakerCompanionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isDark = false;
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color textThemeColor = const Color(0xFF065643);
     Color subTextColor = Colors.grey[700]!;
 
@@ -522,7 +520,6 @@ class _CaretakerCompanionScreenState extends State<CaretakerCompanionScreen> {
   }
 
   Widget _buildCheckRow(String text, bool value, ValueChanged<bool?> onChanged) {
-    bool isDark = false;
     Color textThemeColor = const Color(0xFF065643);
 
     return CheckboxListTile(

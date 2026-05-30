@@ -25,10 +25,7 @@ class _ClientPlanState extends State<ClientPlan>{
               pinned: true,
               elevation: 0,
               backgroundColor: Colors.transparent,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF065643)),
-                onPressed: () => Navigator.pop(context),
-              ),
+              automaticallyImplyLeading: false,
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 centerTitle: false,

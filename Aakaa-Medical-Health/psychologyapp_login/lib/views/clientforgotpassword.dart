@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:psychologyapp_login/controllers/passwordresetemail.dart';
+import 'package:http/http.dart' as http;
+import 'package:psychologyapp_login/controllers/signup_loginfunctionality.dart';
 import 'package:psychologyapp_login/views/clientforpasemailconfirmation.dart';
 import '../widgets/zen_background.dart';
 
@@ -186,14 +187,20 @@ class _ClientForgotPasswordState extends State<ClientForgotPassword>{
           if (_clientForgotPasswordkey.currentState!.validate()) {
             _showLoadingDialog(context);
             
-            final normalizedemail = emailController.text.toLowerCase();
-            final query = await FirebaseFirestore.instance.collection('Users').where('Identifier', isEqualTo: normalizedemail).limit(1).get();
+            final normalizedEmail = emailController.text.toLowerCase().trim();
             
-            if (query.docs.isNotEmpty) {
-              final success = await PasswordResetEmailController().sendResetEmail(emailController.text);
+            try {
+              final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/auth/forgot-password");
+              final response = await http.post(
+                url,
+                headers: {"Content-Type": "application/json"},
+                body: jsonEncode({"email": normalizedEmail}),
+              );
+
+              final data = jsonDecode(response.body);
               Navigator.pop(context); // Pop loading
-              
-              if (success == 'OK') {
+
+              if (response.statusCode == 200 && data["status"] == "success") {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
@@ -201,11 +208,11 @@ class _ClientForgotPasswordState extends State<ClientForgotPassword>{
                   ),
                 );
               } else {
-                _showSnackBar(context, 'Reset link failed. Please try again.');
+                _showSnackBar(context, data["message"] ?? "Failed to initiate reset. User not found.");
               }
-            } else {
+            } catch (e) {
               Navigator.pop(context); // Pop loading
-              _showSnackBar(context, 'Email not found. Please sign up.');
+              _showSnackBar(context, "Connection error. Ensure the backend server is running.");
             }
           }
         },

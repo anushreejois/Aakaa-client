@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
 import 'package:psychologyapp_login/controllers/plan_controller.dart';
+import 'package:psychologyapp_login/controllers/payment_service.dart';
 
 class ClientSubscription extends StatefulWidget {
   const ClientSubscription({super.key});
@@ -197,20 +198,42 @@ class _ClientSubscriptionState extends State<ClientSubscription> {
     );
   }
 
+  void _showSuccessSnackBar(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg, style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: const Color(0xFF0A7D62),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
   Widget _buildContinueButton() {
     return GestureDetector(
-      onTap: () {
-        PlanController.selectPlan(_selectedPlanIndex);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Successfully updated to ${PlanController.currentPlan} Plan!", style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold)),
-            backgroundColor: const Color(0xFF0A7D62),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            duration: const Duration(seconds: 2),
-          ),
+      onTap: () async {
+        if (_selectedPlanIndex == 0) {
+          PlanController.selectPlan(0);
+          _showSuccessSnackBar("Successfully updated to Freemium Plan!");
+          Navigator.pop(context);
+          return;
+        }
+
+        double amount = 0.0;
+        if (_selectedPlanIndex == 1) amount = 199.0;
+        else if (_selectedPlanIndex == 2) amount = 399.0;
+        else if (_selectedPlanIndex == 3) amount = 799.0;
+
+        await PaymentService.startSubscriptionPayment(
+          planIndex: _selectedPlanIndex,
+          amount: amount,
+          context: context,
+          onComplete: () {
+            _showSuccessSnackBar("Successfully upgraded to ${PlanController.currentPlan} Plan! 🌟");
+            Navigator.pop(context);
+          },
         );
-        Navigator.pop(context);
       },
       child: Container(
         width: double.infinity,

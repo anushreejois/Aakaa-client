@@ -85,6 +85,10 @@ class _InfoState extends State<Info> with SingleTickerProviderStateMixin {
                   },
                   itemCount: pageSlide.infoTexts.length,
                   itemBuilder: (context, index) {
+                    final textParts = pageSlide.infoTexts[index].split('\n');
+                    final title = textParts[0];
+                    final description = textParts.length > 1 ? textParts[1] : '';
+
                     return AnimatedSwitcher(
                       duration: const Duration(milliseconds: 500),
                       transitionBuilder: (child, animation) {
@@ -92,7 +96,7 @@ class _InfoState extends State<Info> with SingleTickerProviderStateMixin {
                           opacity: animation,
                           child: SlideTransition(
                             position: Tween<Offset>(
-                              begin: const Offset(0.2, 0),
+                              begin: const Offset(0, 0.1),
                               end: Offset.zero,
                             ).animate(animation),
                             child: child,
@@ -101,19 +105,87 @@ class _InfoState extends State<Info> with SingleTickerProviderStateMixin {
                       },
                       child: Padding(
                         key: ValueKey(index),
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                        child: Center(
-                          child: Text(
-                            pageSlide.infoTexts[index],
-                            textAlign: TextAlign.center,
-                            style: GoogleFonts.outfit(
-                              color: const Color(0xFF065643),
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              height: 1.4,
-                              letterSpacing: -0.5,
+                        padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // 🌟 Beautiful Floating Glowing Icon Container
+                            Container(
+                              width: 130,
+                              height: 130,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF065643).withValues(alpha: 0.06),
+                                    blurRadius: 30,
+                                    spreadRadius: 2,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                  BoxShadow(
+                                    color: const Color(0xFF0A7D62).withValues(alpha: 0.04),
+                                    blurRadius: 20,
+                                    offset: const Offset(0, -5),
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: const Color(0xFF065643).withValues(alpha: 0.05),
+                                  width: 1.5,
+                                ),
+                              ),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  // Soft decorative radial glow inside the circle
+                                  Container(
+                                    width: 100,
+                                    height: 100,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: RadialGradient(
+                                        colors: [
+                                          const Color(0xFFFFF7F5),
+                                          const Color(0xFF0A7D62).withValues(alpha: 0.08),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Icon(
+                                    pageSlide.infoIcons[index],
+                                    size: 48,
+                                    color: const Color(0xFF065643),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 48),
+                            
+                            // 🌟 Beautifully Structured Title
+                            Text(
+                              title,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                color: const Color(0xFF065643),
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -1,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            
+                            // 🌟 Serene, Poetic Description
+                            Text(
+                              description,
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.outfit(
+                                color: const Color(0xFF065643).withValues(alpha: 0.7),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                height: 1.6,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );

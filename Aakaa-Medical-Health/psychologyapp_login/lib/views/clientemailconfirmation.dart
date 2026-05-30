@@ -8,10 +8,12 @@ import "package:psychologyapp_login/controllers/signup_loginfunctionality.dart";
 class ClientEmailVerification extends StatefulWidget {
   final String email;
   final String password;
+  final String fullName;
   const ClientEmailVerification({
     super.key,
     required this.email,
     required this.password,
+    required this.fullName,
   });
 
   @override
@@ -227,28 +229,72 @@ class _ClientEmailVerificationState extends State<ClientEmailVerification> {
     );
   }
 
-  void _handleVerify() {
+  Future<void> _handleVerify() async {
     String userEnteredOTP = _firstDigit.text + _secondDigit.text + _thirdDigit.text + _fourthDigit.text;
-    bool verified = OTPGeneration.verifyOTP(userEnteredOTP);
+    if (userEnteredOTP.length < 4) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator(color: Colors.white)),
+    );
+
+    bool verified = await OTPGeneration.verifyOTP(widget.email, userEnteredOTP);
     
+    if (mounted) {
+      Navigator.pop(context); // Pop loading dialog
+    }
+
     if (verified) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Account verified successfully!'),
-          backgroundColor: Color(0xFF0A7D62),
-        ),
+      // Trigger actual user registration on backend
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator(color: Colors.white)),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ClientLogin()),
+
+      final signupResult = await signupFunctionality.signUpUser(
+        widget.email,
+        widget.password,
+        widget.fullName,
       );
+
+      if (mounted) {
+        Navigator.pop(context); // Pop loading dialog
+      }
+
+      if (signupResult == "success") {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Account verified and created successfully!'),
+              backgroundColor: Color(0xFF0A7D62),
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ClientLogin()),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(signupResult),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid code. Please try again.'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid code. Please try again.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 }

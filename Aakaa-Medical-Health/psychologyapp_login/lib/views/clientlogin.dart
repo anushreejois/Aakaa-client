@@ -1,8 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:psychologyapp_login/controllers/signup_loginfunctionality.dart';
 import 'package:psychologyapp_login/views/clientforgotpassword.dart';
 import 'package:psychologyapp_login/views/clientnavigationbar.dart';
+import 'package:psychologyapp_login/views/clientemailconfirmation.dart';
+import 'package:psychologyapp_login/controllers/otpgeneration.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
 import 'package:psychologyapp_login/controllers/user_controller.dart';
 
@@ -96,11 +101,18 @@ class _ClientLoginState extends State<ClientLogin> {
                       const SizedBox(height: 20),
                     ],
 
-                    _buildTextField(
+                     _buildTextField(
                       controller: _isLoginMode ? emailController : signupEmailController,
                       hint: "Email Address",
                       icon: Icons.email_outlined,
-                      validator: (v) => !v!.contains('@') ? "Valid email required" : null,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return "Email is required";
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                        if (!emailRegex.hasMatch(v.trim())) {
+                          return "Please enter a valid email address";
+                        }
+                        return null;
+                      },
                     ),
                     
                     const SizedBox(height: 20),
@@ -136,6 +148,8 @@ class _ClientLoginState extends State<ClientLogin> {
                     const SizedBox(height: 40),
 
                     _buildActionButton(),
+                    
+                    _buildGoogleButton(),
 
                     const SizedBox(height: 32),
 
@@ -236,21 +250,23 @@ class _ClientLoginState extends State<ClientLogin> {
                 _showErrorSnackBar(result);
               }
             } else {
-              final result = await signupFunctionality.signUpUser(
-                signupEmailController.text, 
-                signupPasswordController.text
-              );
+              // ✉️ Send OTP Verification to Email before creating the database account
+              final success = await OTPGeneration.sendOTP(signupEmailController.text);
               Navigator.pop(context); // Close loading
               
-              if (result == 'success') {
-                UserController.updateEmail(
-                  signupEmailController.text,
-                  fullName: signupNameController.text.trim().isNotEmpty ? signupNameController.text : null,
+              if (success) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClientEmailVerification(
+                      email: signupEmailController.text,
+                      password: signupPasswordController.text,
+                      fullName: signupNameController.text.trim(),
+                    ),
+                  ),
                 );
-                _showSuccessSnackBar("Account created! Please login.");
-                setState(() => _isLoginMode = true);
               } else {
-                _showErrorSnackBar(result);
+                _showErrorSnackBar("Failed to send verification code. Please check your email.");
               }
             }
           }
@@ -266,6 +282,105 @@ class _ClientLoginState extends State<ClientLogin> {
           style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
+    );
+  }
+
+  Widget _buildGoogleButton() {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(child: Divider(color: const Color(0xFF065643).withValues(alpha: 0.1))),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                "OR",
+                style: GoogleFonts.outfit(
+                  color: const Color(0xFF065643).withValues(alpha: 0.4),
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Expanded(child: Divider(color: const Color(0xFF065643).withValues(alpha: 0.1))),
+          ],
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          width: double.infinity,
+          height: 65,
+          child: OutlinedButton(
+            onPressed: () async {
+              _showLoadingDialog();
+              try {
+                final url = Uri.parse("${SignupLoginFunctionality.backendUrl}/api/auth/google-login");
+                final response = await http.post(
+                  url,
+                  headers: {"Content-Type": "application/json"},
+                  body: jsonEncode({
+                    "email": "google.wellness@gmail.com",
+                    "fullName": "Google Wellness Member"
+                  }),
+                );
+
+                final data = jsonDecode(response.body);
+                Navigator.pop(context); // Close loading
+
+                if (response.statusCode == 200 && data["status"] == "success") {
+                  final token = data["token"];
+                  final userData = data["user"];
+
+                  // Save JWT token locally for persistent authentication
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString("auth_token", token);
+
+                  // Update UserController
+                  UserController.updateUserFromBackend(userData);
+
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ClientNavigationBar(email: userData["email"]),
+                    ),
+                    (route) => false,
+                  );
+                } else {
+                  _showErrorSnackBar(data["message"] ?? "Google Sign-In failed.");
+                }
+              } catch (e) {
+                Navigator.pop(context); // Close loading
+                _showErrorSnackBar("Connection failed. Please ensure backend is running.");
+              }
+            },
+            style: OutlinedButton.styleFrom(
+              side: BorderSide(color: const Color(0xFF065643).withValues(alpha: 0.15)),
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+              elevation: 0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.g_mobiledata_rounded,
+                  size: 32,
+                  color: Color(0xFF065643),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  _isLoginMode ? "Continue with Google" : "Sign Up with Google",
+                  style: GoogleFonts.outfit(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF065643),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
