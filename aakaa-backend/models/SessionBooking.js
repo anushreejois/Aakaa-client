@@ -25,6 +25,15 @@ const sessionBookingSchema = new mongoose.Schema({
     enum: ['pending', 'paid', 'failed'],
     default: 'pending'
   },
+  status: {
+    type: String,
+    enum: ['pending', 'approved', 'declined', 'cancelled'],
+    default: 'pending'
+  },
+  encryptedNotes: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now

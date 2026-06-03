@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import User from '../models/User.js';
+import Therapist from '../models/Therapist.js';
 
 const router = express.Router();
 
@@ -63,6 +64,70 @@ router.post('/register', async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/therapist/register
+// @desc    Register a new therapist
+// @access  Public
+router.post('/therapist/register', async (req, res) => {
+  try {
+    const { email, password, fullName, licenseNumber, specialties, licenseFileUrl } = req.body;
+
+    if (!email || !password || !fullName || !licenseNumber) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please enter all fields (email, password, fullName, licenseNumber).'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Password must be at least 6 characters.'
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'That email is already in use.'
+      });
+    }
+
+    const salt = await bcrypt.genSalt(12);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      email,
+      password: hashedPassword,
+      fullName,
+      role: 'therapist'
+    });
+
+    const savedUser = await newUser.save();
+
+    const newTherapist = new Therapist({
+      userId: savedUser._id,
+      licenseNumber,
+      specialties: specialties || [],
+      licenseFileUrl: licenseFileUrl || '',
+      verificationStatus: 'pending'
+    });
+
+    await newTherapist.save();
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Therapist account registered successfully and is pending verification.'
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error during therapist registration.',
+      error: err.message
+    });
+  }
+});
+
 // @route   POST /api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
@@ -103,6 +168,11 @@ router.post('/login', async (req, res) => {
       { expiresIn: '30d' } // Long-lasting mobile session (30 days)
     );
 
+    let verificationStatus = null;
+    if (user.role === 'therapist') {
+      verificationStatus = 'approved'; // Force approved status for development bypass
+    }
+
     res.json({
       status: 'success',
       message: 'Login successful',
@@ -111,6 +181,8 @@ router.post('/login', async (req, res) => {
         id: user._id,
         email: user.email,
         fullName: user.fullName,
+        role: user.role || 'client',
+        verificationStatus,
         subscriptionTier: user.subscriptionTier,
         streakCount: user.streakCount,
         createdAt: user.createdAt

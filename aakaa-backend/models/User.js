@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  role: {
+    type: String,
+    enum: ['client', 'therapist'],
+    default: 'client'
+  },
   subscriptionTier: {
     type: String,
     enum: ['freemium', 'basic', 'standard', 'premium'],
@@ -39,6 +44,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['Male', 'Female', 'Other'],
     default: 'Female'
+  },
+  mindfulMinutes: {
+    type: Number,
+    default: 0
   },
   createdAt: {
     type: Date,

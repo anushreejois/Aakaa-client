@@ -9,6 +9,8 @@ import agoraRouter from './routes/agora.js';
 import chatRouter from './routes/chat.js';
 import reportsRouter from './routes/reports.js';
 import aiRouter from './routes/ai.js';
+import therapistRouter from './routes/therapist.js';
+import notificationRouter from './routes/notification.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +28,8 @@ app.use('/api/agora', agoraRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/reports', reportsRouter);
 app.use('/api/ai', aiRouter);
+app.use('/api/therapist', therapistRouter);
+app.use('/api/notifications', notificationRouter);
 
 // Basic Health Check Route
 app.get('/', (req, res) => {

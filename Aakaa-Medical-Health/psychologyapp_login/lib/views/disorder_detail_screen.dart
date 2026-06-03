@@ -415,75 +415,102 @@ class _ClinicalScreeningQuizState extends State<ClinicalScreeningQuiz> {
         "Feeling nervous, anxious, or on edge?",
         "Not being able to stop or control worrying?",
         "Worrying too much about different things?",
-        "Trouble relaxing or feeling restless?"
+        "Trouble relaxing or feeling restless?",
+        "Becoming easily annoyed or irritable due to anxiety?",
+        "Feeling afraid, as if something awful might happen?",
+        "Experiencing physical symptoms like a racing heart, sweating, or shaking when worried?"
       ];
     } else if (title.contains("Mood")) {
       return [
         "Little interest or pleasure in doing things?",
         "Feeling down, depressed, or hopeless?",
         "Trouble falling/staying asleep, or sleeping too much?",
-        "Feeling tired, fatigued, or having low energy?"
+        "Feeling tired, fatigued, or having low energy?",
+        "Poor appetite or overeating?",
+        "Feeling bad about yourself — or that you are a failure or have let yourself or your family down?",
+        "Trouble concentrating on things, such as reading the newspaper or watching television?"
       ];
     } else if (title.contains("Sleep")) {
       return [
         "Difficulty falling asleep, staying asleep, or waking too early?",
         "How satisfied/dissatisfied are you with your current sleep pattern?",
         "How much does your sleep pattern interfere with daily functioning?",
-        "How worried or distressed are you about your current sleep difficulties?"
+        "How worried or distressed are you about your current sleep difficulties?",
+        "Waking up in the middle of the night and struggling to quiet your mind?",
+        "Experiencing daytime sleepiness, lack of energy, or difficulty concentrating?",
+        "Feeling anxious or tense when thinking about or preparing for bed?"
       ];
     } else if (title.contains("Stress") || title.contains("Trauma")) {
       return [
         "Experiencing intrusive, distressing memories or flashbacks?",
         "Avoiding thoughts, feelings, or situations related to trauma?",
         "Feeling hypervigilant, irritable, or easily startled?",
-        "Difficulty sleeping or concentrating due to emotional stress?"
+        "Difficulty sleeping or concentrating due to emotional stress?",
+        "Feeling emotionally numb or detached from loved ones and activities?",
+        "Having strong physical reactions (like sweating or heart racing) when reminded of a stressful event?",
+        "Feeling constantly on guard or alert, even in safe environments?"
       ];
     } else if (title.contains("OCD")) {
       return [
         "Having intrusive, unwanted thoughts that cause severe anxiety?",
         "Feeling driven to perform repetitive behaviors (checking, washing, ordering)?",
         "Experiencing extreme distress if rituals are interrupted?",
-        "Rituals taking up significant time or impacting daily activities?"
+        "Rituals taking up significant time or impacting daily activities?",
+        "Feeling an overwhelming need for symmetry, order, or absolute perfection?",
+        "Repeatedly doubting or checking things (e.g., locks, appliances) to prevent harm?",
+        "Struggling to control or stop repetitive mental acts (like counting or praying silently) to ease anxiety?"
       ];
     } else if (title.contains("ADHD")) {
       return [
         "Trouble organizing tasks, forgetfulness, or losing daily items?",
         "Difficulty sustaining attention or focusing on long activities?",
         "Restlessness, constant physical fidgeting, or talking excessively?",
-        "Acting on impulse or speaking without waiting for your turn?"
+        "Acting on impulse or speaking without waiting for your turn?",
+        "Struggling to initiate tasks or easily getting sidetracked by unrelated distractions?",
+        "Difficulty keeping track of time or meeting deadlines (time blindness)?",
+        "Feeling internally restless or mentally exhausted from trying to focus?"
       ];
     } else if (title.contains("Eating")) {
       return [
         "Severe anxiety about body shape, weight, or food intake?",
         "Urges to restrict meals or binge eat compulsively?",
         "Compensatory behaviors or guilt surrounding eating?",
-        "Obsessively monitoring mirrors, scale numbers, or nutritional labels?"
+        "Obsessively monitoring mirrors, scale numbers, or nutritional labels?",
+        "Feeling that your self-worth is entirely determined by your body shape or weight?",
+        "Eating in secret or feeling out of control when eating?",
+        "Avoiding social gatherings or activities because they involve food?"
       ];
     } else if (title.contains("Personality")) {
       return [
         "Intense fear of abandonment or highly unstable relationships?",
         "Rapid shifts in self-image, goals, or core values?",
         "Frequent extreme mood swings or feelings of chronic emptiness?",
-        "Intense, inappropriate anger or difficulty controlling emotions?"
+        "Intense, inappropriate anger or difficulty controlling emotions?",
+        "Engaging in impulsive, risky behaviors under high emotional distress?",
+        "Feeling paranoid or experiencing temporary disconnects from reality when stressed?",
+        "Struggling to maintain a stable sense of who you are or what you want?"
       ];
     } else {
       return [
         "Compulsive cravings or inability to limit substance/behavior loops?",
         "Tolerance requiring larger amounts to feel satisfied?",
         "Experiencing distress or withdrawal when trying to cut back?",
-        "Neglecting work, social, or recreational priorities for the habit?"
+        "Neglecting work, social, or recreational priorities for the habit?",
+        "Using substances or behaviors to escape, numb, or cope with difficult emotions?",
+        "Continuing the habit even when knowing it is causing physical or psychological harm?",
+        "Failing in attempts to cut down or control the frequency of the behavior?"
       ];
     }
   }
 
   Map<String, dynamic> _getFeedback() {
-    if (_totalScore <= 4) {
+    if (_totalScore <= 7) {
       return {
         "status": "Mild / Supportive Focus",
         "color": const Color(0xFF0A7D62),
         "desc": "Your symptoms indicate a mild level of distress. We highly recommend practicing daily breathing, logging your reflective journal, and exploring our sleep ambient sound sanctuaries to maintain your emotional alignment."
       };
-    } else if (_totalScore <= 8) {
+    } else if (_totalScore <= 14) {
       return {
         "status": "Moderate / Active Action",
         "color": Colors.orange[800],

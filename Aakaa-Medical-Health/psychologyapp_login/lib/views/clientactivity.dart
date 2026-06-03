@@ -26,6 +26,12 @@ class ClientActivity extends StatefulWidget {
 class _ClientActivityState extends State<ClientActivity> {
   int? _selectedMoodIndex;
 
+  @override
+  void initState() {
+    super.initState();
+    ActivityController.fetchActivitySummary();
+  }
+
   final List<Map<String, dynamic>> _moods = [
     {"label": "Terrible", "icon": Icons.sentiment_very_dissatisfied_rounded, "color": const Color(0xFFFF4B4B)},
     {"label": "Bad", "icon": Icons.sentiment_dissatisfied_rounded, "color": const Color(0xFFFF8A00)},
@@ -264,8 +270,6 @@ class _ClientActivityState extends State<ClientActivity> {
               return GestureDetector(
                 onTap: () {
                   setState(() => _selectedMoodIndex = index);
-                  ActivityController.logMood(index, mood['label']);
-                  _showMoodConfirmation(mood['label']);
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
@@ -276,8 +280,8 @@ class _ClientActivityState extends State<ClientActivity> {
                   ),
                   child: Icon(
                     mood['icon'],
-                    color: isSelected ? mood['color'] : Colors.grey[300],
-                    size: 24,
+                    color: isSelected ? mood['color'] : const Color(0xFF065643).withValues(alpha: 0.35),
+                    size: 28, // slight size increase to 28 for even better visual tap targets!
                   ),
                 ),
               );
@@ -289,20 +293,45 @@ class _ClientActivityState extends State<ClientActivity> {
               "Feeling ${_moods[_selectedMoodIndex!]['label']}",
               style: GoogleFonts.outfit(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF065643)),
             ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final mood = _moods[_selectedMoodIndex!];
+                  final message = await ActivityController.logMood(_selectedMoodIndex!, mood['label']);
+                  _showMoodConfirmation(message);
+                  setState(() {
+                    _selectedMoodIndex = null; // Reset selection after logging successfully
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF065643),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  elevation: 0,
+                ),
+                child: Text(
+                  "Confirm & Log Mood",
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.bold, fontSize: 14),
+                ),
+              ),
+            ),
           ],
         ],
       ),
     );
   }
 
-  void _showMoodConfirmation(String mood) {
+  void _showMoodConfirmation(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Logged feeling $mood.", style: GoogleFonts.outfit(color: Colors.white)),
+        content: Text(message, style: GoogleFonts.outfit(color: Colors.white)),
         backgroundColor: const Color(0xFF0A7D62),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       ),
     );
   }

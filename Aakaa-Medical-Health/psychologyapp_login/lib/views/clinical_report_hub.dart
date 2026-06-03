@@ -21,6 +21,19 @@ class _ClinicalReportHubState extends State<ClinicalReportHub> {
   bool _isGenerating = false;
   String _generatedReportHash = "";
 
+  @override
+  void initState() {
+    super.initState();
+    _loadSummary();
+  }
+
+  Future<void> _loadSummary() async {
+    await ActivityController.fetchActivitySummary();
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
   Future<void> _triggerPdfGeneration() async {
     setState(() {
       _isGenerating = true;
@@ -245,7 +258,7 @@ class _ClinicalReportHubState extends State<ClinicalReportHub> {
                           Expanded(
                             child: _buildStatCard(
                               "Avg Mood Value", 
-                              "Great", 
+                              ActivityController.averageMoodLabel, 
                               Icons.sentiment_very_satisfied_rounded,
                               const Color(0xFF0A7D62),
                             ),
@@ -269,7 +282,7 @@ class _ClinicalReportHubState extends State<ClinicalReportHub> {
                           Expanded(
                             child: _buildStatCard(
                               "Mindful Activity", 
-                              "28 Mins", 
+                              "${ActivityController.mindfulMinutes} Mins", 
                               Icons.self_improvement_rounded,
                               const Color(0xFFE040FB),
                             ),

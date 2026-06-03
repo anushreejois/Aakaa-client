@@ -17,6 +17,12 @@ class _ClientMySessionState extends State<ClientMySession>{
   int _selectedTabIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    SessionController.fetchSessions();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFF7F5),

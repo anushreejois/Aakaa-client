@@ -3,8 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 import '../controllers/activity_controller.dart';
 import 'package:psychologyapp_login/widgets/zen_background.dart';
 
-class MoodJourney extends StatelessWidget {
+class MoodJourney extends StatefulWidget {
   const MoodJourney({super.key});
+
+  @override
+  State<MoodJourney> createState() => _MoodJourneyState();
+}
+
+class _MoodJourneyState extends State<MoodJourney> {
+  @override
+  void initState() {
+    super.initState();
+    ActivityController.fetchActivitySummary();
+  }
 
   @override
   Widget build(BuildContext context) {
