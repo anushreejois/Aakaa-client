@@ -2442,6 +2442,16 @@ class _TherapistHomeState extends State<TherapistHome> {
     final String timeStr = "${apptDate.day}/${apptDate.month}/${apptDate.year} at ${TimeOfDay.fromDateTime(apptDate).format(context)}";
     final String bookingId = req["_id"] ?? "";
 
+    final String rawType = (req["consultationType"] ?? "video").toString().toLowerCase();
+    int rate = 1500;
+    if (rawType == "video") {
+      rate = _videoRate;
+    } else if (rawType == "audio") {
+      rate = _audioRate;
+    } else if (rawType == "chat") {
+      rate = _chatRate;
+    }
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -2481,7 +2491,7 @@ class _TherapistHomeState extends State<TherapistHome> {
                       ),
                     ),
                     Text(
-                      "$type Consultation • ₹1,500",
+                      "$type Consultation • ₹$rate",
                       style: GoogleFonts.outfit(
                         fontSize: 11.5,
                         color: const Color(0xFF065643).withValues(alpha: 0.5),
