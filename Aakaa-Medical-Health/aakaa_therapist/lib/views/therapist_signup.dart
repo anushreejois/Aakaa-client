@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/zen_background.dart';
-import 'therapist_payment.dart';
+import 'therapist_login.dart';
 
 class TherapistSignup extends StatefulWidget {
   const TherapistSignup({super.key});
@@ -118,23 +118,28 @@ class _TherapistSignupState extends State<TherapistSignup> {
       if (response.statusCode == 201) {
         HapticFeedback.mediumImpact();
         
-        final user = data["user"];
         // Stash registration parameters for session caching
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("auth_email", _emailController.text.trim().toLowerCase());
-        await prefs.setString("auth_token", data["token"]);
-        await prefs.setString("auth_role", user["role"] ?? "therapist");
         
         if (!mounted) return;
 
-        // Route to Onboarding Payment screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Account registered successfully! Please log in to pay your onboarding fee.",
+              style: GoogleFonts.outfit(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: const Color(0xFF065643),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+
+        // Route to login page so they authenticate and pay onboarding fee on login
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => TherapistPayment(
-              doctorName: "Dr. ${_nameController.text.trim()}",
-              email: _emailController.text.trim().toLowerCase(),
-            ),
+            builder: (context) => const TherapistLogin(),
           ),
           (route) => false,
         );
