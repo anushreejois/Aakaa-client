@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/zen_background.dart';
-import 'therapist_home.dart';
+import 'therapist_payment.dart';
 
 class TherapistSignup extends StatefulWidget {
   const TherapistSignup({super.key});
@@ -118,18 +118,22 @@ class _TherapistSignupState extends State<TherapistSignup> {
       if (response.statusCode == 201) {
         HapticFeedback.mediumImpact();
         
+        final user = data["user"];
         // Stash registration parameters for session caching
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString("auth_email", _emailController.text.trim().toLowerCase());
+        await prefs.setString("auth_token", data["token"]);
+        await prefs.setString("auth_role", user["role"] ?? "therapist");
         
         if (!mounted) return;
 
-        // Route directly to Home Dashboard for development bypass
+        // Route to Onboarding Payment screen
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-            builder: (context) => TherapistHome(
+            builder: (context) => TherapistPayment(
               doctorName: "Dr. ${_nameController.text.trim()}",
+              email: _emailController.text.trim().toLowerCase(),
             ),
           ),
           (route) => false,

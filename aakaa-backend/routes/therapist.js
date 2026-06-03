@@ -340,4 +340,35 @@ router.get('/earnings', auth, async (req, res) => {
   }
 });
 
+// @route   POST /api/therapist/confirm-payment
+// @desc    Confirm therapist onboarding membership fee payment
+// @access  Private
+router.post('/confirm-payment', auth, async (req, res) => {
+  try {
+    const therapist = await Therapist.findOne({ userId: req.userId });
+    if (!therapist) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'Therapist profile not found.'
+      });
+    }
+
+    therapist.hasPaidMembershipFee = true;
+    await therapist.save();
+
+    res.json({
+      status: 'success',
+      message: 'Onboarding payment confirmed successfully.',
+      hasPaidMembershipFee: true,
+      verificationStatus: therapist.verificationStatus
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server error confirming onboarding payment.',
+      error: err.message
+    });
+  }
+});
+
 export default router;

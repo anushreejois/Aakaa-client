@@ -115,9 +115,25 @@ router.post('/therapist/register', async (req, res) => {
 
     await newTherapist.save();
 
+    const token = jwt.sign(
+      { id: savedUser._id },
+      process.env.JWT_SECRET || 'aakaa_super_secret_jwt_key_2026',
+      { expiresIn: '30d' }
+    );
+
     res.status(201).json({
       status: 'success',
-      message: 'Therapist account registered successfully and is pending verification.'
+      message: 'Therapist account registered successfully.',
+      token,
+      user: {
+        id: savedUser._id,
+        email: savedUser.email,
+        fullName: savedUser.fullName,
+        role: savedUser.role || 'therapist',
+        verificationStatus: newTherapist.verificationStatus,
+        hasPaidMembershipFee: newTherapist.hasPaidMembershipFee || false,
+        createdAt: savedUser.createdAt
+      }
     });
   } catch (err) {
     res.status(500).json({
@@ -169,8 +185,16 @@ router.post('/login', async (req, res) => {
     );
 
     let verificationStatus = null;
+    let hasPaidMembershipFee = false;
     if (user.role === 'therapist') {
-      verificationStatus = 'approved'; // Force approved status for development bypass
+      const therapist = await Therapist.findOne({ userId: user._id });
+      if (therapist) {
+        verificationStatus = therapist.verificationStatus || 'pending';
+        hasPaidMembershipFee = therapist.hasPaidMembershipFee || false;
+      } else {
+        verificationStatus = 'pending';
+        hasPaidMembershipFee = false;
+      }
     }
 
     res.json({
@@ -183,6 +207,7 @@ router.post('/login', async (req, res) => {
         fullName: user.fullName,
         role: user.role || 'client',
         verificationStatus,
+        hasPaidMembershipFee,
         subscriptionTier: user.subscriptionTier,
         streakCount: user.streakCount,
         createdAt: user.createdAt

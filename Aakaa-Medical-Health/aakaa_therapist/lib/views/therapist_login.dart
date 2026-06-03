@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/zen_background.dart';
 import 'therapist_signup.dart';
+import 'therapist_payment.dart';
 import 'verification_waiting.dart';
 import 'therapist_home.dart';
 
@@ -76,18 +77,30 @@ class _TherapistLoginState extends State<TherapistLogin> {
         await prefs.setString("auth_email", user["email"]);
 
         final String verificationStatus = user["verificationStatus"] ?? "pending";
+        final bool hasPaidMembershipFee = user["hasPaidMembershipFee"] ?? false;
         final String doctorName = user["fullName"] ?? "Therapist";
 
         if (!mounted) return;
 
-        if (verificationStatus == "pending" || verificationStatus == "rejected") {
+        if (!hasPaidMembershipFee) {
+          // Route to Onboarding Payment gateway simulator
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TherapistPayment(
+                doctorName: "Dr. $doctorName",
+                email: user["email"],
+              ),
+            ),
+          );
+        } else if (verificationStatus == "pending" || verificationStatus == "rejected") {
           // Send to locked waiting room
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => VerificationWaiting(
                 doctorName: "Dr. $doctorName",
-                licenseId: "VERIFYING-STATUS",
+                licenseId: "Awaiting Document Review",
               ),
             ),
           );

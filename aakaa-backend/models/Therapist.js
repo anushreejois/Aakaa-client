@@ -18,7 +18,11 @@ const therapistSchema = new mongoose.Schema({
   verificationStatus: {
     type: String,
     enum: ['pending', 'approved', 'rejected'],
-    default: 'approved' // Set to approved temporarily for development
+    default: 'pending'
+  },
+  hasPaidMembershipFee: {
+    type: Boolean,
+    default: false
   },
   licenseFileUrl: {
     type: String,
